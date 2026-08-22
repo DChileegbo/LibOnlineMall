@@ -225,6 +225,22 @@ async function logoutSeller() {
 
                   window.location.href = "#seller";
                   }
+}async function checkSellerSession() {
+    const {
+        data: { session }
+          } = await supabase.auth.getSession();
+
+            const dashboard = document.getElementById("seller-dashboard");
+
+              if (!dashboard) return;
+
+                if (!session) {
+                    dashboard.style.display = "none";
+                        return;
+                          }
+
+                            dashboard.style.display = "block";
+                            }
 }
 
 <script>
@@ -251,6 +267,8 @@ function filterProducts(){
 function choose(cat){document.getElementById("search").value=cat;filterProducts();document.getElementById("products").scrollIntoView({behavior:"smooth"});}
 function submitDemo(e){e.preventDefault();alert("Thank you! In the next version, this form will send the listing to LibOnlineMall for approval.");}
 render();
+checkSellerSession();
 </script>
+
 </body>
 </html>
