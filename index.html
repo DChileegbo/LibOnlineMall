@@ -71,7 +71,16 @@ footer{margin-top:50px;background:#17212b;color:#d0d5dd;padding:30px 5%;text-ali
   <strong>LibOnlineMall</strong><br>Buy & sell in Liberia.<br><br>Prototype — more features coming.
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = "https://gvzxefrmhvqmkehbrult.supabase.co";
+  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_uelg3cyss3Odnl9nuqeZ6w_rryTkSJC";
+
+  const supabase = window.supabase.createClient(
+    SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+      );
+console.log("Supabase connected:", supabase);
+      const products=[
 
 <script>
 const products=[
