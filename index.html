@@ -60,11 +60,35 @@ footer{margin-top:50px;background:#17212b;color:#d0d5dd;padding:30px 5%;text-ali
   <div id="products" class="grid"></div>
 
   <div id="seller" class="section-title"><h2>List Your Product</h2></div>
-  <div class="note">Prototype: submissions are not connected to a database yet. For launch, we'll connect this form to a free Google Form/Sheet so you can approve listings before they appear.</div>
-<<<<<<< HEAD
-=======
-  <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScgHBWXGFL6p3MhF7D3JbWD8aBpZyCNTDlcAnKxwwzROzPcpA/viewform?embedded=true" width="640" height="1562" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
->>>>>>> 6140b58bb1e618f805d32340bce0a4d3ced5000a
+  <div class="note"
+<div id="seller-account">
+    <h3>Create a Seller Account</h3>
+
+      <input id="seller-name" type="text" placeholder="Full name" required>
+
+        <input id="seller-business" type="text"
+                 placeholder="Business name (optional)">
+
+                   <input id="seller-phone" type="tel"
+                            placeholder="WhatsApp / Phone number" required>
+
+                              <input id="seller-location" type="text"
+                                       placeholder="Location" required>
+
+                                         <input id="seller-email" type="email"
+                                                  placeholder="Email address" required>
+
+                                                    <input id="seller-password" type="password"
+                                                             placeholder="Password (minimum 6 characters)" required>
+
+                                                               <button onclick="registerSeller()">
+                                                                   Create Seller Account
+                                                                     </button>
+
+                                                                       <p id="seller-message"></p>
+                                                                       </div>
+  
+
 </main>
 
 <footer>
@@ -81,7 +105,50 @@ footer{margin-top:50px;background:#17212b;color:#d0d5dd;padding:30px 5%;text-ali
       SUPABASE_PUBLISHABLE_KEY
       );
 console.log("Supabase connected:", supabase);
-      const products=[
+async function registerSeller() {
+    const name = document.getElementById("seller-name").value.trim();
+      const business = document.getElementById("seller-business").value.trim();
+        const phone = document.getElementById("seller-phone").value.trim();
+          const location = document.getElementById("seller-location").value.trim();
+            const email = document.getElementById("seller-email").value.trim();
+              const password = document.getElementById("seller-password").value;
+
+                const message = document.getElementById("seller-message");
+
+                  if (!name || !phone || !location || !email || !password) {
+                      message.textContent = "Please complete all required fields.";
+                          return;
+                            }
+
+                              if (password.length < 6) {
+                                  message.textContent = "Password must be at least 6 characters.";
+                                      return;
+                                        }
+
+                                          message.textContent = "Creating your seller account...";
+
+                                            const { data, error } = await supabase.auth.signUp({
+                                                email: email,
+                                                    password: password,
+                                                        options: {
+                                                              data: {
+                                                                      full_name: name,
+                                                                              phone: phone,
+                                                                                      business_name: business,
+                                                                                              location: location
+                                                                                                    }
+                                                                                                        }
+                                                                                                          });
+
+                                                                                                            if (error) {
+                                                                                                                message.textContent = error.message;
+                                                                                                                    return;
+                                                                                                                      }
+
+                                                                                                                        message.textContent =
+                                                                                                                            "Account created! Please check your email to confirm your account.";
+                                                                                                                            }
+}
 
 <script>
 const products=[
