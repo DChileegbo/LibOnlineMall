@@ -110,6 +110,23 @@ footer{margin-top:50px;background:#17212b;color:#d0d5dd;padding:30px 5%;text-ali
 
                                               <p id="login-message"></p>
                                               </div>
+ <section id="seller-dashboard" class="section">
+    <div class="section-title">
+        <h2>Seller Dashboard</h2>
+          </div>
+
+            <div class="dashboard-card">
+                <h3>Welcome, Seller!</h3>
+
+                    <p>Manage your LibOnlineMall account and products here.</p>
+
+                        <div id="dashboard-message"></div>
+
+                            <button onclick="logoutSeller()">
+                                  Logout
+                                      </button>
+                                        </div>
+                                        </section>                                           
 </main>
 
 <footer>
@@ -197,6 +214,17 @@ async function loginSeller() {
 
                                                   window.location.href = "#seller-dashboard";
                                                   }
+}
+async function logoutSeller() {
+    const { error } = await supabase.auth.signOut();
+
+      if (error) {
+          alert(error.message);
+              return;
+                }
+
+                  window.location.href = "#seller";
+                  }
 }
 
 <script>
