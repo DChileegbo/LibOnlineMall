@@ -110,7 +110,7 @@ footer{margin-top:50px;background:#17212b;color:#d0d5dd;padding:30px 5%;text-ali
 
                                               <p id="login-message"></p>
                                               </div>
- <section id="seller-dashboard" class="section">
+ <section id="seller-dashboard" class="section" style="display:none;">
     <div class="section-title">
         <h2>Seller Dashboard</h2>
           </div>
@@ -225,7 +225,7 @@ async function logoutSeller() {
 
                   window.location.href = "#seller";
                   }
-                  
+
 }async function checkSellerSession() {
     const {
         data: { session }
