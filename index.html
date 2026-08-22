@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LibOnlineMall — Liberia's Online Marketplace</title>
+<meta name="description" content="LibOnlineMall — Buy and sell products and services in Liberia.">
+<style>
+*{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;background:#f5f7f9;color:#18212b}
+header{background:#0b7a53;color:white;padding:18px 5%;position:sticky;top:0;z-index:5}
+.nav{max-width:1100px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:15px}
+.logo{font-size:24px;font-weight:800}.tag{font-size:12px;opacity:.9}
+.sell{background:#fff;color:#0b7a53;border:0;border-radius:8px;padding:11px 15px;font-weight:700;cursor:pointer}
+.hero{background:white;padding:45px 5% 30px}.hero-inner{max-width:1100px;margin:auto}
+h1{font-size:38px;margin:0 0 10px}.hero p{color:#667085}
+.search{display:flex;max-width:700px;margin-top:22px}.search input{flex:1;padding:15px;border:1px solid #d0d5dd;border-radius:8px 0 0 8px;font-size:16px}.search button{padding:0 20px;border:0;background:#0b7a53;color:#fff;border-radius:0 8px 8px 0}
+main{max-width:1100px;margin:28px auto;padding:0 5%}
+.section-title{display:flex;justify-content:space-between;align-items:center;margin:25px 0 15px}
+.categories{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.cat{background:white;border:1px solid #e4e7ec;border-radius:10px;padding:16px;text-align:center;cursor:pointer}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e4e7ec}.pic{height:150px;background:#e9eef2;display:flex;align-items:center;justify-content:center;font-size:42px}.body{padding:14px}.price{font-size:19px;font-weight:800;color:#0b7a53}.meta{font-size:13px;color:#667085;margin-top:6px}.contact{display:block;text-align:center;background:#0b7a53;color:white;text-decoration:none;padding:10px;border-radius:7px;margin-top:12px}
+form{background:#fff;padding:20px;border:1px solid #e4e7ec;border-radius:12px;max-width:650px}label{display:block;font-weight:700;margin:12px 0 6px}input,select,textarea{width:100%;padding:12px;border:1px solid #d0d5dd;border-radius:7px;font-size:15px}textarea{min-height:100px}.submit{margin-top:15px;background:#0b7a53;color:#fff;border:0;padding:12px 18px;border-radius:7px;font-weight:700}
+#seller{scroll-margin-top:90px}.note{background:#fff8e6;border:1px solid #f2d28b;padding:13px;border-radius:9px;font-size:14px}
+footer{margin-top:50px;background:#17212b;color:#d0d5dd;padding:30px 5%;text-align:center}
+@media(max-width:700px){h1{font-size:29px}.categories{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.nav{align-items:flex-start}.logo{font-size:20px}.sell{padding:9px 11px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="nav">
+    <div><div class="logo">🇱🇷 LibOnlineMall</div><div class="tag">Liberia's Online Marketplace</div></div>
+    <button class="sell" onclick="document.getElementById('seller').scrollIntoView({behavior:'smooth'})">+ Sell Something</button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <h1>Buy & Sell in Liberia.</h1>
+    <p>Find products and services from sellers across Liberia.</p>
+    <div class="search">
+      <input id="search" placeholder="Search phones, shoes, cars, furniture..." oninput="filterProducts()">
+      <button onclick="filterProducts()">Search</button>
+    </div>
+  </div>
+</section>
+
+<main>
+  <div class="section-title"><h2>Categories</h2></div>
+  <div class="categories">
+    <div class="cat" onclick="choose('Electronics')">📱<br>Electronics</div>
+    <div class="cat" onclick="choose('Fashion')">👕<br>Fashion</div>
+    <div class="cat" onclick="choose('Vehicles')">🚗<br>Vehicles</div>
+    <div class="cat" onclick="choose('Home')">🛋️<br>Home & Furniture</div>
+    <div class="cat" onclick="choose('Computers')">💻<br>Computers</div>
+    <div class="cat" onclick="choose('Sports')">🏋️<br>Sports</div>
+    <div class="cat" onclick="choose('Property')">🏠<br>Property</div>
+    <div class="cat" onclick="choose('Services')">🔧<br>Services</div>
+  </div>
+
+  <div class="section-title"><h2>Latest Listings</h2></div>
+  <div id="products" class="grid"></div>
+
+  <div id="seller" class="section-title"><h2>List Your Product</h2></div>
+  <div class="note">Prototype: submissions are not connected to a database yet. For launch, we'll connect this form to a free Google Form/Sheet so you can approve listings before they appear.</div>
+  <form onsubmit="submitDemo(event)">
+    <label>Product name</label><input required placeholder="e.g. iPhone 13">
+    <label>Category</label>
+    <select required><option value="">Choose category</option><option>Electronics</option><option>Fashion</option><option>Vehicles</option><option>Home</option><option>Computers</option><option>Sports</option><option>Property</option><option>Services</option></select>
+    <label>Price (USD)</label><input required type="number" min="0" placeholder="450">
+    <label>Location</label><input required placeholder="e.g. Paynesville">
+    <label>WhatsApp number</label><input required placeholder="+231 ...">
+    <label>Description</label><textarea placeholder="Describe the item..."></textarea>
+    <button class="submit">Submit Listing</button>
+  </form>
+</main>
+
+<footer>
+  <strong>LibOnlineMall</strong><br>Buy & sell in Liberia.<br><br>Prototype — more features coming.
+</footer>
+
+<script>
+const products=[
+ {name:"iPhone 13",price:"$450",location:"Monrovia",cat:"Electronics",icon:"📱"},
+ {name:"Nike Running Shoes",price:"$35",location:"Paynesville",cat:"Fashion",icon:"👟"},
+ {name:"Office Chair",price:"$65",location:"Sinkor",cat:"Home",icon:"🪑"},
+ {name:"Laptop Computer",price:"$280",location:"Monrovia",cat:"Computers",icon:"💻"},
+ {name:"Football Boots",price:"$40",location:"Congo Town",cat:"Sports",icon:"⚽"},
+ {name:"Toyota Corolla",price:"$7,500",location:"Paynesville",cat:"Vehicles",icon:"🚗"}
+];
+function render(list=products){
+ document.getElementById("products").innerHTML=list.map(p=>`
+ <div class="card"><div class="pic">${p.icon}</div><div class="body">
+ <strong>${p.name}</strong><div class="price">${p.price}</div>
+ <div class="meta">${p.location} · ${p.cat}</div>
+ <a class="contact" href="https://wa.me/" target="_blank">💬 Contact Seller</a>
+ </div></div>`).join("");
+}
+function filterProducts(){
+ const q=document.getElementById("search").value.toLowerCase();
+ render(products.filter(p=>(p.name+" "+p.location+" "+p.cat).toLowerCase().includes(q)));
+}
+function choose(cat){document.getElementById("search").value=cat;filterProducts();document.getElementById("products").scrollIntoView({behavior:"smooth"});}
+function submitDemo(e){e.preventDefault();alert("Thank you! In the next version, this form will send the listing to LibOnlineMall for approval.");}
+render();
+</script>
+</body>
+</html>
