@@ -89,6 +89,27 @@ footer{margin-top:50px;background:#17212b;color:#d0d5dd;padding:30px 5%;text-ali
                                                                        </div>
   
 
+ <div id="seller-login">
+    <h3>Seller Login</h3>
+
+      <input
+          id="login-email"
+              type="email"
+                  placeholder="Email address"
+                    >
+
+                      <input
+                          id="login-password"
+                              type="password"
+                                  placeholder="Password"
+                                    >
+
+                                      <button onclick="loginSeller()">
+                                          Login
+                                            </button>
+
+                                              <p id="login-message"></p>
+                                              </div>
 </main>
 
 <footer>
@@ -148,6 +169,34 @@ async function registerSeller() {
                                                                                                                         message.textContent =
                                                                                                                             "Account created! Please check your email to confirm your account.";
                                                                                                                             }
+}
+async function loginSeller() {
+    const email = document.getElementById("login-email").value.trim();
+      const password = document.getElementById("login-password").value;
+
+        const message = document.getElementById("login-message");
+
+          if (!email || !password) {
+              message.textContent = "Please enter your email and password.";
+                  return;
+                    }
+
+                      message.textContent = "Logging in...";
+
+                        const { data, error } = await supabase.auth.signInWithPassword({
+                            email: email,
+                                password: password
+                                  });
+
+                                    if (error) {
+                                        message.textContent = error.message;
+                                            return;
+                                              }
+
+                                                message.textContent = "Login successful!";
+
+                                                  window.location.href = "#seller-dashboard";
+                                                  }
 }
 
 <script>
