@@ -61,31 +61,55 @@ footer{margin-top:50px;background:#17212b;color:#d0d5dd;padding:30px 5%;text-ali
 
   <div id="seller" class="section-title"><h2>List Your Product</h2></div>
   <div class="note"
-<div id="seller-account">
-    <h3>Create a Seller Account</h3>
 
-      <input id="seller-name" type="text" placeholder="Full name" required>
+  <div id="seller-account">
+      <h3>Create a Seller Account</h3>
 
-        <input id="seller-business" type="text"
-                 placeholder="Business name (optional)">
+        <input id="seller-name" type="text" placeholder="Full name">
 
-                   <input id="seller-phone" type="tel"
-                            placeholder="WhatsApp / Phone number" required>
+          <input id="seller-business" type="text"
+                   placeholder="Business name (optional)">
 
-                              <input id="seller-location" type="text"
-                                       placeholder="Location" required>
+                     <input id="seller-phone" type="tel"
+                              placeholder="WhatsApp number">
 
-                                         <input id="seller-email" type="email"
-                                                  placeholder="Email address" required>
+                                <input id="seller-location" type="text"
+                                         placeholder="Location">
 
-                                                    <input id="seller-password" type="password"
-                                                             placeholder="Password (minimum 6 characters)" required>
+                                           <input id="seller-email" type="email"
+                                                    placeholder="Email address">
+
+                                                      <input id="seller-password" type="password"
+                                                               placeholder="Password">
+
+                                                                 <button type="button" onclick="registerSeller()">
+                                                                     Create Seller Account
+                                                                       </button>
+
+                                                                         <p id="seller-message"></p>
+                                                                         </div>
 
                                                                <button type="button" onclick="registerSeller()">
                                                                   Create Seller Account
                                                                   </button>
                                                                    Create Seller Account
-                                                                     </button>
+                                                                     </button> async function registerSeller() {
+                                                                        const name = document.getElementById("seller-name").value.trim();
+                                                                          const email = document.getElementById("seller-email").value.trim();
+                                                                            const password = document.getElementById("seller-password").value;
+
+                                                                              const { error } = await supabase.auth.signUp({
+                                                                                  email,
+                                                                                      password,
+                                                                                          options: {
+                                                                                                data: { full_name: name }
+                                                                                                    }
+                                                                                                      });
+
+                                                                                                        document.getElementById("seller-message").textContent =
+                                                                                                            error ? error.message : "Account created! Check your email.";
+                                                                                                            }
+                                                                     }
 
                                                                        <p id="seller-message"></p>
                                                                        </div>
