@@ -121,7 +121,54 @@ footer{margin-top:50px;background:#17212b;color:#d0d5dd;padding:30px 5%;text-ali
                     <p>Manage your LibOnlineMall account and products here.</p>
 
                         <div id="dashboard-message"></div>
+                        <button onclick="showAddProduct()">
+                            + Add Product
+                            </button>
+<div id="add-product-form" style="display:none;">
 
+    <h3>Add Product</h3>
+
+      <input id="product-name" type="text" placeholder="Product name">
+
+        <input id="product-price" type="number" placeholder="Price (USD)">
+
+          <select id="product-category">
+              <option value="">Select Category</option>
+                  <option>Electronics</option>
+                      <option>Phones</option>
+                          <option>Fashion</option>
+                              <option>Home</option>
+                                  <option>Vehicles</option>
+                                      <option>Sports</option>
+                                          <option>Computers</option>
+                                              <option>Other</option>
+                                                </select>
+
+                                                  <input id="product-location" type="text" placeholder="Location">
+
+                                                    <input id="product-whatsapp" type="tel" placeholder="WhatsApp Number">
+
+                                                      <textarea id="product-description" placeholder="Describe your product"></textarea>
+
+                                                        <p><strong>Product Photo</strong></p>
+                                                          <input id="product-photo" type="file" accept="image/*">
+
+                                                            <p><strong>Product Video (Optional)</strong></p>
+                                                              <input id="product-video" type="file" accept="video/mp4,video/quicktime">
+
+                                                                <p>Maximum: 1 video • 60 seconds • 25 MB</p>
+
+                                                                  <button onclick="submitProduct()">
+                                                                      Submit for Approval
+                                                                        </button>
+
+                                                                          <button onclick="hideAddProduct()">
+                                                                              Cancel
+                                                                                </button>
+
+                                                                                  <p id="product-message"></p>
+
+                                                                                  </div>
                             <button onclick="logoutSeller()">
                                   Logout
                                       </button>
@@ -225,6 +272,15 @@ async function logoutSeller() {
 
                   window.location.href = "#seller";
                   }
+
+function showAddProduct() {
+    document.getElementById("add-product-form").style.display = "block";
+    }
+
+    function hideAddProduct() {
+      document.getElementById("add-product-form").style.display = "none";
+      }
+}
 
 }async function checkSellerSession() {
     const {
