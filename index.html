@@ -3,356 +3,1560 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>LibOnlineMall — Liberia's Online Marketplace</title>
-<meta name="description" content="LibOnlineMall — Buy and sell products and services in Liberia.">
+
+<meta name="description"
+      content="LibOnlineMall — Buy and sell products and services in Liberia.">
+
 <style>
-*{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;background:#f5f7f9;color:#18212b}
-header{background:#0b7a53;color:white;padding:18px 5%;position:sticky;top:0;z-index:5}
-.nav{max-width:1100px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:15px}
-.logo{font-size:24px;font-weight:800}.tag{font-size:12px;opacity:.9}
-.sell{background:#fff;color:#0b7a53;border:0;border-radius:8px;padding:11px 15px;font-weight:700;cursor:pointer}
-.hero{background:white;padding:45px 5% 30px}.hero-inner{max-width:1100px;margin:auto}
-h1{font-size:38px;margin:0 0 10px}.hero p{color:#667085}
-.search{display:flex;max-width:700px;margin-top:22px}.search input{flex:1;padding:15px;border:1px solid #d0d5dd;border-radius:8px 0 0 8px;font-size:16px}.search button{padding:0 20px;border:0;background:#0b7a53;color:#fff;border-radius:0 8px 8px 0}
-main{max-width:1100px;margin:28px auto;padding:0 5%}
-.section-title{display:flex;justify-content:space-between;align-items:center;margin:25px 0 15px}
-.categories{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.cat{background:white;border:1px solid #e4e7ec;border-radius:10px;padding:16px;text-align:center;cursor:pointer}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e4e7ec}.pic{height:150px;background:#e9eef2;display:flex;align-items:center;justify-content:center;font-size:42px}.body{padding:14px}.price{font-size:19px;font-weight:800;color:#0b7a53}.meta{font-size:13px;color:#667085;margin-top:6px}.contact{display:block;text-align:center;background:#0b7a53;color:white;text-decoration:none;padding:10px;border-radius:7px;margin-top:12px}
-form{background:#fff;padding:20px;border:1px solid #e4e7ec;border-radius:12px;max-width:650px}label{display:block;font-weight:700;margin:12px 0 6px}input,select,textarea{width:100%;padding:12px;border:1px solid #d0d5dd;border-radius:7px;font-size:15px}textarea{min-height:100px}.submit{margin-top:15px;background:#0b7a53;color:#fff;border:0;padding:12px 18px;border-radius:7px;font-weight:700}
-#seller{scroll-margin-top:90px}.note{background:#fff8e6;border:1px solid #f2d28b;padding:13px;border-radius:9px;font-size:14px}
-footer{margin-top:50px;background:#17212b;color:#d0d5dd;padding:30px 5%;text-align:center}
-@media(max-width:700px){h1{font-size:29px}.categories{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.nav{align-items:flex-start}.logo{font-size:20px}.sell{padding:9px 11px}}
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f7f9;
+  color: #18212b;
+}
+
+header {
+  background: #0b7a53;
+  color: white;
+  padding: 18px 5%;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.nav {
+  max-width: 1100px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.tag {
+  font-size: 12px;
+  opacity: .9;
+}
+
+button {
+  cursor: pointer;
+}
+
+.sell {
+  background: white;
+  color: #0b7a53;
+  border: 0;
+  border-radius: 8px;
+  padding: 11px 15px;
+  font-weight: 700;
+}
+
+.hero {
+  background: white;
+  padding: 45px 5% 30px;
+}
+
+.hero-inner {
+  max-width: 1100px;
+  margin: auto;
+}
+
+h1 {
+  font-size: 38px;
+  margin: 0 0 10px;
+}
+
+.hero p {
+  color: #667085;
+}
+
+.search {
+  display: flex;
+  max-width: 700px;
+  margin-top: 22px;
+}
+
+.search input {
+  flex: 1;
+  padding: 15px;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px 0 0 8px;
+  font-size: 16px;
+}
+
+.search button {
+  padding: 0 20px;
+  border: 0;
+  background: #0b7a53;
+  color: white;
+  border-radius: 0 8px 8px 0;
+}
+
+main {
+  max-width: 1100px;
+  margin: 28px auto;
+  padding: 0 5%;
+}
+
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 25px 0 15px;
+}
+
+.categories {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.cat {
+  background: white;
+  border: 1px solid #e4e7ec;
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.cat:hover {
+  border-color: #0b7a53;
+  transform: translateY(-2px);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e4e7ec;
+}
+
+.pic {
+  height: 150px;
+  background: #e9eef2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+}
+
+.body {
+  padding: 14px;
+}
+
+.price {
+  font-size: 19px;
+  font-weight: 800;
+  color: #0b7a53;
+  margin-top: 6px;
+}
+
+.meta {
+  font-size: 13px;
+  color: #667085;
+  margin-top: 6px;
+}
+
+.contact {
+  display: block;
+  text-align: center;
+  background: #0b7a53;
+  color: white;
+  text-decoration: none;
+  padding: 10px;
+  border-radius: 7px;
+  margin-top: 12px;
+}
+
+.form-box {
+  background: white;
+  padding: 20px;
+  border: 1px solid #e4e7ec;
+  border-radius: 12px;
+  max-width: 650px;
+  margin-bottom: 20px;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d0d5dd;
+  border-radius: 7px;
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.primary-btn {
+  margin-top: 5px;
+  background: #0b7a53;
+  color: white;
+  border: 0;
+  padding: 12px 18px;
+  border-radius: 7px;
+  font-weight: 700;
+}
+
+.secondary-btn {
+  background: #667085;
+  color: white;
+  border: 0;
+  padding: 12px 18px;
+  border-radius: 7px;
+  font-weight: 700;
+}
+
+.danger-btn {
+  background: #b42318;
+  color: white;
+  border: 0;
+  padding: 10px 16px;
+  border-radius: 7px;
+  font-weight: 700;
+}
+
+.note {
+  background: #fff8e6;
+  border: 1px solid #f2d28b;
+  padding: 13px;
+  border-radius: 9px;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.message {
+  margin-top: 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.dashboard {
+  background: white;
+  border: 1px solid #e4e7ec;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+#seller,
+#seller-dashboard {
+  scroll-margin-top: 90px;
+}
+
+footer {
+  margin-top: 50px;
+  background: #17212b;
+  color: #d0d5dd;
+  padding: 30px 5%;
+  text-align: center;
+}
+
+.hidden {
+  display: none !important;
+}
+
+@media(max-width:700px) {
+
+  h1 {
+    font-size: 29px;
+  }
+
+  .categories {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .nav {
+    align-items: flex-start;
+  }
+
+  .logo {
+    font-size: 20px;
+  }
+
+  .sell {
+    padding: 9px 11px;
+  }
+
+  .search {
+    width: 100%;
+  }
+}
 </style>
 </head>
+
 <body>
+
+<!-- ================= HEADER ================= -->
+
 <header>
+
   <div class="nav">
-    <div><div class="logo">🇱🇷 LibOnlineMall</div><div class="tag">Liberia's Online Marketplace</div></div>
-    <button class="sell" onclick="document.getElementById('seller').scrollIntoView({behavior:'smooth'})">+ Sell Something</button>
+
+    <div>
+      <div class="logo">🇱🇷 LibOnlineMall</div>
+      <div class="tag">Liberia's Online Marketplace</div>
+    </div>
+
+    <button
+      class="sell"
+      onclick="document.getElementById('seller').scrollIntoView({behavior:'smooth'})">
+      + Sell Something
+    </button>
+
   </div>
+
 </header>
 
+
+<!-- ================= HERO ================= -->
+
 <section class="hero">
+
   <div class="hero-inner">
+
     <h1>Buy & Sell in Liberia.</h1>
-    <p>Find products and services from sellers across Liberia.</p>
+
+    <p>
+      Find products and services from sellers across Liberia.
+    </p>
+
     <div class="search">
-      <input id="search" placeholder="Search phones, shoes, cars, furniture..." oninput="filterProducts()">
-      <button onclick="filterProducts()">Search</button>
-    </div>
-  </div>
-</section>
-
-<main>
-  <div class="section-title"><h2>Categories</h2></div>
-  <div class="categories">
-    <div class="cat" onclick="choose('Electronics')">📱<br>Electronics</div>
-    <div class="cat" onclick="choose('Fashion')">👕<br>Fashion</div>
-    <div class="cat" onclick="choose('Vehicles')">🚗<br>Vehicles</div>
-    <div class="cat" onclick="choose('Home')">🛋️<br>Home & Furniture</div>
-    <div class="cat" onclick="choose('Computers')">💻<br>Computers</div>
-    <div class="cat" onclick="choose('Sports')">🏋️<br>Sports</div>
-    <div class="cat" onclick="choose('Property')">🏠<br>Property</div>
-    <div class="cat" onclick="choose('Services')">🔧<br>Services</div>
-  </div>
-
-  <div class="section-title"><h2>Latest Listings</h2></div>
-  <div id="products" class="grid"></div>
-
-  <div id="seller" class="section-title">
-      <h2>List Your Product</h2>
-      </div>
-
-      <div class="note">
-        Create an account to sell your products on LibOnlineMall.
-        </div>
-
-        <div id="seller-account">
-          <h3>Create a Seller Account</h3>
-
-            <input id="seller-name" type="text" placeholder="Full name">
-
-              <input id="seller-business" type="text" placeholder="Business name (optional)">
-
-                <input id="seller-phone" type="tel" placeholder="WhatsApp number">
-
-                  <input id="seller-location" type="text" placeholder="Location">
-
-                    <input id="seller-email" type="email" placeholder="Email address">
-
-                      <input id="seller-password" type="password" placeholder="Password">
-
-                        <button type="button" onclick="registerSeller()">
-                            Create Seller Account
-                              </button>
-
-                                <p id="seller-message"></p>
-                                </div>
- <div id="seller-login">
-    <h3>Seller Login</h3>
 
       <input
-          id="login-email"
-              type="email"
-                  placeholder="Email address"
-                    >
+        id="search"
+        type="text"
+        placeholder="Search phones, shoes, cars, furniture..."
+        oninput="filterProducts()"
+      >
 
-                      <input
-                          id="login-password"
-                              type="password"
-                                  placeholder="Password"
-                                    >
+      <button onclick="filterProducts()">
+        Search
+      </button>
 
-                                      <button onclick="loginSeller()">
-                                          Login
-                                            </button>
+    </div>
 
-                                              <p id="login-message"></p>
-                                              </div>
- <section id="seller-dashboard" class="section" style="display:none;">
+  </div>
+
+</section>
+
+
+<!-- ================= MAIN ================= -->
+
+<main>
+
+
+  <!-- CATEGORIES -->
+
+  <div class="section-title">
+    <h2>Categories</h2>
+  </div>
+
+  <div class="categories">
+
+    <div class="cat" onclick="choose('Electronics')">
+      📱<br>Electronics
+    </div>
+
+    <div class="cat" onclick="choose('Fashion')">
+      👕<br>Fashion
+    </div>
+
+    <div class="cat" onclick="choose('Vehicles')">
+      🚗<br>Vehicles
+    </div>
+
+    <div class="cat" onclick="choose('Home')">
+      🛋️<br>Home & Furniture
+    </div>
+
+    <div class="cat" onclick="choose('Computers')">
+      💻<br>Computers
+    </div>
+
+    <div class="cat" onclick="choose('Sports')">
+      🏋️<br>Sports
+    </div>
+
+    <div class="cat" onclick="choose('Property')">
+      🏠<br>Property
+    </div>
+
+    <div class="cat" onclick="choose('Services')">
+      🔧<br>Services
+    </div>
+
+  </div>
+
+
+  <!-- LISTINGS -->
+
+  <div class="section-title">
+    <h2>Latest Listings</h2>
+  </div>
+
+  <div id="products" class="grid"></div>
+
+
+  <!-- ================= SELLER AREA ================= -->
+
+  <div id="seller" class="section-title">
+
+    <h2>Sell on LibOnlineMall</h2>
+
+  </div>
+
+  <div class="note">
+
+    Create a seller account to list your products on LibOnlineMall.
+
+  </div>
+
+
+  <!-- ================= REGISTER ================= -->
+
+  <div id="seller-account" class="form-box">
+
+    <h3>Create a Seller Account</h3>
+
+    <input
+      id="seller-name"
+      type="text"
+      placeholder="Full name"
+    >
+
+    <input
+      id="seller-business"
+      type="text"
+      placeholder="Business name (optional)"
+    >
+
+    <input
+      id="seller-phone"
+      type="tel"
+      placeholder="WhatsApp number"
+    >
+
+    <input
+      id="seller-location"
+      type="text"
+      placeholder="Location"
+    >
+
+    <input
+      id="seller-email"
+      type="email"
+      placeholder="Email address"
+    >
+
+    <input
+      id="seller-password"
+      type="password"
+      placeholder="Password (minimum 6 characters)"
+    >
+
+    <button
+      type="button"
+      class="primary-btn"
+      onclick="registerSeller()">
+      Create Seller Account
+    </button>
+
+    <p
+      id="seller-message"
+      class="message">
+    </p>
+
+  </div>
+
+
+  <!-- ================= LOGIN ================= -->
+
+  <div id="seller-login" class="form-box">
+
+    <h3>Seller Login</h3>
+
+    <input
+      id="login-email"
+      type="email"
+      placeholder="Email address"
+    >
+
+    <input
+      id="login-password"
+      type="password"
+      placeholder="Password"
+    >
+
+    <button
+      type="button"
+      class="primary-btn"
+      onclick="loginSeller()">
+      Login
+    </button>
+
+    <p
+      id="login-message"
+      class="message">
+    </p>
+
+  </div>
+
+
+  <!-- ================= SELLER DASHBOARD ================= -->
+
+  <section
+    id="seller-dashboard"
+    class="dashboard hidden">
+
     <div class="section-title">
-        <h2>Seller Dashboard</h2>
-          </div>
 
-            <div class="dashboard-card">
-                <h3>Welcome, Seller!</h3>
+      <h2>Seller Dashboard</h2>
 
-                    <p>Manage your LibOnlineMall account and products here.</p>
+      <button
+        class="danger-btn"
+        onclick="logoutSeller()">
+        Logout
+      </button>
 
-                        <div id="dashboard-message"></div>
-                        <button onclick="showAddProduct()">
-                            + Add Product
-                            </button>
-<div id="add-product-form" style="display:none;">
+    </div>
 
-    <h3>Add Product</h3>
+    <h3 id="seller-welcome">
+      Welcome, Seller!
+    </h3>
 
-      <input id="product-name" type="text" placeholder="Product name">
+    <p>
+      Manage your LibOnlineMall account and products here.
+    </p>
 
-        <input id="product-price" type="number" placeholder="Price (USD)">
+    <button
+      class="primary-btn"
+      onclick="showAddProduct()">
+      + Add Product
+    </button>
 
-          <select id="product-category">
-              <option value="">Select Category</option>
-                  <option>Electronics</option>
-                      <option>Phones</option>
-                          <option>Fashion</option>
-                              <option>Home</option>
-                                  <option>Vehicles</option>
-                                      <option>Sports</option>
-                                          <option>Computers</option>
-                                              <option>Other</option>
-                                                </select>
 
-                                                  <input id="product-location" type="text" placeholder="Location">
+    <!-- ADD PRODUCT -->
 
-                                                    <input id="product-whatsapp" type="tel" placeholder="WhatsApp Number">
+    <div
+      id="add-product-form"
+      class="form-box hidden"
+      style="margin-top:20px;">
 
-                                                      <textarea id="product-description" placeholder="Describe your product"></textarea>
+      <h3>Add Product</h3>
 
-                                                        <p><strong>Product Photo</strong></p>
-                                                          <input id="product-photo" type="file" accept="image/*">
+      <input
+        id="product-name"
+        type="text"
+        placeholder="Product name"
+      >
 
-                                                            <p><strong>Product Video (Optional)</strong></p>
-                                                              <input id="product-video" type="file" accept="video/mp4,video/quicktime">
+      <input
+        id="product-price"
+        type="number"
+        min="0"
+        step="0.01"
+        placeholder="Price (USD)"
+      >
 
-                                                                <p>Maximum: 1 video • 60 seconds • 25 MB</p>
+      <select id="product-category">
 
-                                                                  <button onclick="submitProduct()">
-                                                                      Submit for Approval
-                                                                        </button>
+        <option value="">
+          Select Category
+        </option>
 
-                                                                          <button onclick="hideAddProduct()">
-                                                                              Cancel
-                                                                                </button>
+        <option value="Electronics">
+          Electronics
+        </option>
 
-                                                                                  <p id="product-message"></p>
+        <option value="Phones">
+          Phones
+        </option>
 
-                                                                                  </div>
-                            <button onclick="logoutSeller()">
-                                  Logout
-                                      </button>
-                                        </div>
-                                        </section>                                           
+        <option value="Fashion">
+          Fashion
+        </option>
+
+        <option value="Home">
+          Home
+        </option>
+
+        <option value="Vehicles">
+          Vehicles
+        </option>
+
+        <option value="Sports">
+          Sports
+        </option>
+
+        <option value="Computers">
+          Computers
+        </option>
+
+        <option value="Property">
+          Property
+        </option>
+
+        <option value="Services">
+          Services
+        </option>
+
+        <option value="Other">
+          Other
+        </option>
+
+      </select>
+
+      <input
+        id="product-location"
+        type="text"
+        placeholder="Location"
+      >
+
+      <input
+        id="product-whatsapp"
+        type="tel"
+        placeholder="WhatsApp Number"
+      >
+
+      <textarea
+        id="product-description"
+        placeholder="Describe your product">
+      </textarea>
+
+      <p>
+        <strong>Product Photo</strong>
+      </p>
+
+      <input
+        id="product-photo"
+        type="file"
+        accept="image/*"
+      >
+
+      <p>
+        <strong>Product Video (Optional)</strong>
+      </p>
+
+      <input
+        id="product-video"
+        type="file"
+        accept="video/mp4,video/quicktime"
+      >
+
+      <p style="font-size:13px;color:#667085;">
+        Maximum: 1 video • 60 seconds • 25 MB
+      </p>
+
+      <button
+        class="primary-btn"
+        onclick="submitProduct()">
+        Submit for Approval
+      </button>
+
+      <button
+        class="secondary-btn"
+        onclick="hideAddProduct()">
+        Cancel
+      </button>
+
+      <p
+        id="product-message"
+        class="message">
+      </p>
+
+    </div>
+
+  </section>
+
 </main>
 
+
+<!-- ================= FOOTER ================= -->
+
 <footer>
-  <strong>LibOnlineMall</strong><br>Buy & sell in Liberia.<br><br>Prototype — more features coming.
+
+  <strong>LibOnlineMall</strong>
+
+  <br>
+
+  Buy & sell in Liberia.
+
+  <br><br>
+
+  Prototype — more features coming.
+
 </footer>
+
+
+<!-- ================= SUPABASE ================= -->
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script>
-const SUPABASE_URL = "https://gvzxefrmhvqmkehbrult.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_uelg3cyss3Odnl9nuqeZ6w_rryTkSJC";
 
-const supabase = window.supabase.createClient(
-  SUPABASE_URL,
+<script>
+
+/* =====================================================
+   SUPABASE CONFIGURATION
+   ===================================================== */
+
+const SUPABASE_URL =
+  "https://gvzxefrmhvqmkehbrult.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+  "sb_publishable_uelg3cyss3Odnl9nuqeZ6w_rryTkSJC";
+
+
+const supabase =
+  window.supabase.createClient(
+    SUPABASE_URL,
     SUPABASE_PUBLISHABLE_KEY
+  );
+
+
+/* =====================================================
+   DEMO PRODUCTS
+   ===================================================== */
+
+const products = [
+
+  {
+    name: "iPhone 13",
+    price: "$450",
+    location: "Monrovia",
+    cat: "Electronics",
+    icon: "📱",
+    whatsapp: ""
+  },
+
+  {
+    name: "Nike Running Shoes",
+    price: "$35",
+    location: "Paynesville",
+    cat: "Fashion",
+    icon: "👟",
+    whatsapp: ""
+  },
+
+  {
+    name: "Office Chair",
+    price: "$65",
+    location: "Sinkor",
+    cat: "Home",
+    icon: "🪑",
+    whatsapp: ""
+  },
+
+  {
+    name: "Laptop Computer",
+    price: "$280",
+    location: "Monrovia",
+    cat: "Computers",
+    icon: "💻",
+    whatsapp: ""
+  },
+
+  {
+    name: "Football Boots",
+    price: "$40",
+    location: "Congo Town",
+    cat: "Sports",
+    icon: "⚽",
+    whatsapp: ""
+  },
+
+  {
+    name: "Toyota Corolla",
+    price: "$7,500",
+    location: "Paynesville",
+    cat: "Vehicles",
+    icon: "🚗",
+    whatsapp: ""
+  }
+
+];
+
+
+/* =====================================================
+   DISPLAY PRODUCTS
+   ===================================================== */
+
+function render(list = products) {
+
+  const container =
+    document.getElementById("products");
+
+  if (!container) return;
+
+  if (list.length === 0) {
+
+    container.innerHTML = `
+      <div class="form-box">
+        <strong>No products found.</strong>
+        <p>Try another search.</p>
+      </div>
+    `;
+
+    return;
+  }
+
+
+  container.innerHTML = list.map(product => {
+
+    let whatsappLink = "#";
+
+    if (product.whatsapp) {
+
+      let number =
+        product.whatsapp.replace(/\D/g, "");
+
+      if (number.startsWith("0")) {
+        number =
+          "231" + number.substring(1);
+      }
+
+      whatsappLink =
+        "https://wa.me/" + number;
+    }
+
+
+    return `
+
+      <div class="card">
+
+        <div class="pic">
+          ${product.icon || "🛍️"}
+        </div>
+
+        <div class="body">
+
+          <strong>
+            ${escapeHtml(product.name)}
+          </strong>
+
+          <div class="price">
+            ${escapeHtml(product.price)}
+          </div>
+
+          <div class="meta">
+            ${escapeHtml(product.location)}
+            ·
+            ${escapeHtml(product.cat)}
+          </div>
+
+          ${
+            product.whatsapp
+            ?
+            `<a
+              class="contact"
+              href="${whatsappLink}"
+              target="_blank"
+              rel="noopener">
+              💬 Contact Seller
+            </a>`
+            :
+            `<div
+              class="contact"
+              style="background:#98a2b3;">
+              Contact Seller
+            </div>`
+          }
+
+        </div>
+
+      </div>
+
+    `;
+
+  }).join("");
+
+}
+
+
+/* =====================================================
+   SEARCH
+   ===================================================== */
+
+function filterProducts() {
+
+  const searchInput =
+    document.getElementById("search");
+
+  const query =
+    searchInput.value
+      .toLowerCase()
+      .trim();
+
+
+  const filtered =
+    products.filter(product => {
+
+      const text =
+        (
+          product.name +
+          " " +
+          product.location +
+          " " +
+          product.cat
+        ).toLowerCase();
+
+      return text.includes(query);
+
+    });
+
+
+  render(filtered);
+}
+
+
+/* =====================================================
+   CATEGORY FILTER
+   ===================================================== */
+
+function choose(category) {
+
+  document.getElementById("search").value =
+    category;
+
+  filterProducts();
+
+  document
+    .getElementById("products")
+    .scrollIntoView({
+      behavior: "smooth"
+    });
+
+}
+
+
+/* =====================================================
+   ESCAPE HTML
+   ===================================================== */
+
+function escapeHtml(value) {
+
+  if (value === null ||
+      value === undefined) {
+    return "";
+  }
+
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+}
+
+
+/* =====================================================
+   REGISTER SELLER
+   ===================================================== */
+
+async function registerSeller() {
+
+  const name =
+    document
+      .getElementById("seller-name")
+      .value
+      .trim();
+
+  const business =
+    document
+      .getElementById("seller-business")
+      .value
+      .trim();
+
+  const phone =
+    document
+      .getElementById("seller-phone")
+      .value
+      .trim();
+
+  const location =
+    document
+      .getElementById("seller-location")
+      .value
+      .trim();
+
+  const email =
+    document
+      .getElementById("seller-email")
+      .value
+      .trim();
+
+  const password =
+    document
+      .getElementById("seller-password")
+      .value;
+
+  const message =
+    document.getElementById("seller-message");
+
+
+  if (
+    !name ||
+    !phone ||
+    !location ||
+    !email ||
+    !password
+  ) {
+
+    message.textContent =
+      "Please complete all required fields.";
+
+    return;
+  }
+
+
+  if (password.length < 6) {
+
+    message.textContent =
+      "Password must be at least 6 characters.";
+
+    return;
+  }
+
+
+  message.textContent =
+    "Creating your seller account...";
+
+
+  const {
+    data,
+    error
+  } =
+    await supabase.auth.signUp({
+
+      email: email,
+
+      password: password,
+
+      options: {
+
+        data: {
+
+          full_name: name,
+
+          phone: phone,
+
+          business_name: business,
+
+          location: location
+
+        }
+
+      }
+
+    });
+
+
+  if (error) {
+
+    message.textContent =
+      error.message;
+
+    return;
+  }
+
+
+  message.textContent =
+    "Account created! Please check your email to confirm your account.";
+
+}
+
+
+/* =====================================================
+   SELLER LOGIN
+   ===================================================== */
+
+async function loginSeller() {
+
+  const email =
+    document
+      .getElementById("login-email")
+      .value
+      .trim();
+
+  const password =
+    document
+      .getElementById("login-password")
+      .value;
+
+  const message =
+    document.getElementById("login-message");
+
+
+  if (!email || !password) {
+
+    message.textContent =
+      "Please enter your email and password.";
+
+    return;
+  }
+
+
+  message.textContent =
+    "Logging in...";
+
+
+  const {
+    data,
+    error
+  } =
+    await supabase.auth.signInWithPassword({
+
+      email: email,
+
+      password: password
+
+    });
+
+
+  if (error) {
+
+    message.textContent =
+      error.message;
+
+    return;
+  }
+
+
+  message.textContent =
+    "Login successful!";
+
+
+  await checkSellerSession();
+
+
+  document
+    .getElementById("seller-dashboard")
+    .scrollIntoView({
+      behavior: "smooth"
+    });
+
+}
+
+
+/* =====================================================
+   LOGOUT
+   ===================================================== */
+
+async function logoutSeller() {
+
+  const {
+    error
+  } =
+    await supabase.auth.signOut();
+
+
+  if (error) {
+
+    alert(error.message);
+
+    return;
+  }
+
+
+  checkSellerSession();
+
+
+  window.location.hash =
+    "seller";
+
+}
+
+
+/* =====================================================
+   CHECK SELLER SESSION
+   ===================================================== */
+
+async function checkSellerSession() {
+
+  const {
+    data: {
+      session
+    }
+  } =
+    await supabase.auth.getSession();
+
+
+  const dashboard =
+    document.getElementById(
+      "seller-dashboard"
     );
 
-    async function registerSeller() {
-      const name = document.getElementById("seller-name").value.trim();
-        const business = document.getElementById("seller-business").value.trim();
-          const phone = document.getElementById("seller-phone").value.trim();
-            const location = document.getElementById("seller-location").value.trim();
-              const email = document.getElementById("seller-email").value.trim();
-                const password = document.getElementById("seller-password").value;
-                  const message = document.getElementById("seller-message");
+  const account =
+    document.getElementById(
+      "seller-account"
+    );
 
-                    if (!name || !phone || !location || !email || !password) {
-                        message.textContent = "Please complete all required fields.";
-                            return;
-                              }
+  const login =
+    document.getElementById(
+      "seller-login"
+    );
 
-                                if (password.length < 6) {
-                                    message.textContent = "Password must be at least 6 characters.";
-                                        return;
-                                          }
 
-                                            message.textContent = "Creating your seller account...";
+  if (!dashboard) return;
 
-                                              const { error } = await supabase.auth.signUp({
-                                                  email: email,
-                                                      password: password,
-                                                          options: {
-                                                                data: {
-                                                                        full_name: name,
-                                                                                phone: phone,
-                                                                                        business_name: business,
-                                                                                                location: location
-                                                                                                      }
-                                                                                                          }
-                                                                                                            });
 
-                                                                                                              if (error) {
-                                                                                                                  message.textContent = error.message;
-                                                                                                                      return;
-                                                                                                                        }
+  if (session) {
 
-                                                                                                                          message.textContent =
-                                                                                                                              "Account created! Please check your email to confirm your account.";
-                                                                                                                              }
+    dashboard.classList.remove(
+      "hidden"
+    );
 
-                                                                                                                              async function loginSeller() {
-                                                                                                                                const email = document.getElementById("login-email").value.trim();
-                                                                                                                                  const password = document.getElementById("login-password").value;
-                                                                                                                                    const message = document.getElementById("login-message");
+    account.classList.add(
+      "hidden"
+    );
 
-                                                                                                                                      if (!email || !password) {
-                                                                                                                                          message.textContent = "Please enter your email and password.";
-                                                                                                                                              return;
-                                                                                                                                                }
+    login.classList.add(
+      "hidden"
+    );
 
-                                                                                                                                                  message.textContent = "Logging in...";
 
-                                                                                                                                                    const { error } = await supabase.auth.signInWithPassword({
-                                                                                                                                                        email: email,
-                                                                                                                                                            password: password
-                                                                                                                                                              });
+    const user =
+      session.user;
 
-                                                                                                                                                                if (error) {
-                                                                                                                                                                    message.textContent = error.message;
-                                                                                                                                                                        return;
-                                                                                                                                                                          }
 
-                                                                                                                                                                            message.textContent = "Login successful!";
-                                                                                                                                                                              checkSellerSession();
-                                                                                                                                                                              }
+    const name =
+      user.user_metadata &&
+      user.user_metadata.full_name
+      ?
+      user.user_metadata.full_name
+      :
+      user.email;
 
-                                                                                                                                                                              async function logoutSeller() {
-                                                                                                                                                                                const { error } = await supabase.auth.signOut();
 
-                                                                                                                                                                                  if (error) {
-                                                                                                                                                                                      alert(error.message);
-                                                                                                                                                                                          return;
-                                                                                                                                                                                            }
+    document.getElementById(
+      "seller-welcome"
+    ).textContent =
+      "Welcome, " + name + "!";
 
-                                                                                                                                                                                              checkSellerSession();
-                                                                                                                                                                                                window.location.href = "#seller";
-                                                                                                                                                                                                }
 
-                                                                                                                                                                                                function showAddProduct() {
-                                                                                                                                                                                                  document.getElementById("add-product-form").style.display = "block";
-                                                                                                                                                                                                  }
+  } else {
 
-                                                                                                                                                                                                  function hideAddProduct() {
-                                                                                                                                                                                                    document.getElementById("add-product-form").style.display = "none";
-                                                                                                                                                                                                    }
+    dashboard.classList.add(
+      "hidden"
+    );
 
-                                                                                                                                                                                                    async function checkSellerSession() {
-                                                                                                                                                                                                      const {
-                                                                                                                                                                                                          data: { session }
-                                                                                                                                                                                                            } = await supabase.auth.getSession();
+    account.classList.remove(
+      "hidden"
+    );
 
-                                                                                                                                                                                                              const dashboard = document.getElementById("seller-dashboard");
+    login.classList.remove(
+      "hidden"
+    );
 
-                                                                                                                                                                                                                if (!dashboard) return;
+  }
 
-                                                                                                                                                                                                                  if (!session) {
-                                                                                                                                                                                                                      dashboard.style.display = "none";
-                                                                                                                                                                                                                          return;
-                                                                                                                                                                                                                            }
+}
 
-                                                                                                                                                                                                                              dashboard.style.display = "block";
-                                                                                                                                                                                                                              }
 
-                                                                                                                                                                                                                              const products = [
-                                                                                                                                                                                                                                {name:"iPhone 13",price:"$450",location:"Monrovia",cat:"Electronics",icon:"📱"},
-                                                                                                                                                                                                                                  {name:"Nike Running Shoes",price:"$35",location:"Paynesville",cat:"Fashion",icon:"👟"},
-                                                                                                                                                                                                                                    {name:"Office Chair",price:"$65",location:"Sinkor",cat:"Home",icon:"🪑"},
-                                                                                                                                                                                                                                      {name:"Laptop Computer",price:"$280",location:"Monrovia",cat:"Computers",icon:"💻"},
-                                                                                                                                                                                                                                        {name:"Football Boots",price:"$40",location:"Congo Town",cat:"Sports",icon:"⚽"},
-                                                                                                                                                                                                                                          {name:"Toyota Corolla",price:"$7,500",location:"Paynesville",cat:"Vehicles",icon:"🚗"}
-                                                                                                                                                                                                                                          ];
+/* =====================================================
+   SHOW ADD PRODUCT FORM
+   ===================================================== */
 
-                                                                                                                                                                                                                                          function render(list = products) {
-                                                                                                                                                                                                                                            document.getElementById("products").innerHTML = list.map(p => `
-                                                                                                                                                                                                                                                <div class="card">
-                                                                                                                                                                                                                                                      <div class="pic">${p.icon}</div>
-                                                                                                                                                                                                                                                            <div class="body">
-                                                                                                                                                                                                                                                                    <strong>${p.name}</strong>
-                                                                                                                                                                                                                                                                            <div class="price">${p.price}</div>
-                                                                                                                                                                                                                                                                                    <div class="meta">${p.location} · ${p.cat}</div>
-                                                                                                                                                                                                                                                                                            <a class="contact" href="https://wa.me/" target="_blank">
-                                                                                                                                                                                                                                                                                                      💬 Contact Seller
-                                                                                                                                                                                                                                                                                                              </a>
-                                                                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                                                                        </div>
-                                                                                                                                                                                                                                                                                                                          `).join("");
-                                                                                                                                                                                                                                                                                                                          }
+function showAddProduct() {
 
-                                                                                                                                                                                                                                                                                                                          function filterProducts() {
-                                                                                                                                                                                                                                                                                                                            const q = document.getElementById("search").value.toLowerCase();
+  document
+    .getElementById(
+      ("add-product-form")
+    .classList.remove("hidden");
 
-                                                                                                                                                                                                                                                                                                                              render(
-                                                                                                                                                                                                                                                                                                                                  products.filter(p =>
-                                                                                                                                                                                                                                                                                                                                        (p.name + " " + p.location + " " + p.cat)
-                                                                                                                                                                                                                                                                                                                                                .toLowerCase()
-                                                                                                                                                                                                                                                                                                                                                        .includes(q)
-                                                                                                                                                                                                                                                                                                                                                            )
-                                                                                                                                                                                                                                                                                                                                                              );
-                                                                                                                                                                                                                                                                                                                                                              }
+}
 
-                                                                                                                                                                                                                                                                                                                                                              function choose(cat) {
-                                                                                                                                                                                                                                                                                                                                                                document.getElementById("search").value = cat;
-                                                                                                                                                                                                                                                                                                                                                                  filterProducts();
 
-                                                                                                                                                                                                                                                                                                                                                                    document.getElementById("products").scrollIntoView({
-                                                                                                                                                                                                                                                                                                                                                                        behavior: "smooth"
-                                                                                                                                                                                                                                                                                                                                                                          });
-                                                                                                                                                                                                                                                                                                                                                                          }
+/* =====================================================
+   HIDE ADD PRODUCT FORM
+   ===================================================== */
 
-                                                                                                                                                                                                                                                                                                                                                                          render();
-                                                                                                                                                                                                                                                                                                                                                                          checkSellerSession();
-                                                                                                                                                                                                                                                                                                                                                                          </script>
+function hideAddProduct() {
 
-                                                                                                                                                                                                                                                                                                                                                                          </body>
-                                                                                                                                                                                                                                                                                                                                                                          </html>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              if (!name || !phone || !location || !email || !password) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  message.textContent = "Please complete all required fields.";
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    });
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       if (error) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        message.textContent = error.messa
+  document
+    .getElementById("add-product-form")
+    .classList.add("hidden");
+
+}
+
+
+/* =====================================================
+   SUBMIT PRODUCT
+   ===================================================== */
+
+async function submitProduct() {
+
+  const message =
+    document.getElementById("product-message");
+
+  const name =
+    document.getElementById("product-name").value.trim();
+
+  const price =
+    document.getElementById("product-price").value.trim();
+
+  const category =
+    document.getElementById("product-category").value;
+
+  const location =
+    document.getElementById("product-location").value.trim();
+
+  const whatsapp =
+    document.getElementById("product-whatsapp").value.trim();
+
+  const description =
+    document.getElementById("product-description").value.trim();
+
+  const photo =
+    document.getElementById("product-photo").files[0];
+
+  const video =
+    document.getElementById("product-video").files[0];
+
+
+  /* =========================
+     BASIC VALIDATION
+     ========================= */
+
+  if (
+    !name ||
+    !price ||
+    !category ||
+    !location ||
+    !whatsapp ||
+    !description
+  ) {
+
+    message.textContent =
+      "Please complete all required product fields.";
+
+    return;
+  }
+
+
+  if (Number(price) < 0) {
+
+    message.textContent =
+      "Product price cannot be negative.";
+
+    return;
+  }
+
+
+  /* =========================
+     CHECK PHOTO
+     ========================= */
+
+  if (!photo) {
+
+    message.textContent =
+      "Please select a product photo.";
+
+    return;
+  }
+
+
+  if (!photo.type.startsWith("image/")) {
+
+    message.textContent =
+      "Please select a valid image file.";
+
+    return;
+  }
+
+
+  /* =========================
+     CHECK VIDEO SIZE
+     ========================= */
+
+  if (video) {
+
+    const maxVideoSize =
+      25 * 1024 * 1024;
+
+    if (video.size > maxVideoSize) {
+
+      message.textContent =
+        "Video must be 25 MB or smaller.";
+
+      return;
+    }
+
+  }
+
+
+  /* =========================
+     CHECK LOGIN
+     ========================= */
+
+  const {
+    data: {
+      session
+    }
+  } =
+    await supabase.auth.getSession();
+
+
+  if (!session) {
+
+    message.textContent =
+      "Please log in before adding a product.";
+
+    return;
+  }
+
+
+  /* =========================
+     CURRENT USER
+     ========================= */
+
+  const user =
+    session.user;
+
+
+  /* =========================
+     DEMO SUBMISSION
+     ========================= */
+
+  message.textContent =
+    "Product submitted for approval.";
+
+
+  /*
+    IMPORTANT:
+
+    At this stage the product is NOT
+    being saved to a Supabase database.
+
+    The seller account/login works through
+    Supabase Authentication.
+
+    To make products permanently appear
+    on the marketplace, we still need to
+    create:
+
+    1. Supabase products table
+    2. Supabase Storage for photos
+    3. Supabase Storage for videos
+    4. Product approval system
+    5. Database connection
+  */
+
+
+  console.log("Product submission:", {
+
+    seller_id: user.id,
+
+    name: name,
+
+    price: price,
+
+    category: category,
+
+    location: location,
+
+    whatsapp: whatsapp,
+
+    description: description,
+
+    photo: photo.name,
+
+    video: video
+      ? video.name
+      : null
+
+  });
+
+
+  /* =========================
+     CLEAR FORM
+     ========================= */
+
+  document.getElementById(
+    "product-name"
+  ).value = "";
+
+  document.getElementById(
+    "product-price"
+  ).value = "";
+
+  document.getElementById(
+    "product-category"
+  ).value = "";
+
+  document.getElementById(
+    "product-location"
+  ).value = "";
+
+  document.getElementById(
+    "product-whatsapp"
+  ).value = "";
+
+  document.getElementById(
+    "product-description"
+  ).value = "";
+
+  document.getElementById(
+    "product-photo"
+  ).value = "";
+
+  document.getElementById(
+    "product-video"
+  ).value = "";
+
+}
+
+
+/* =====================================================
+   SUPABASE AUTH STATE LISTENER
+   ===================================================== */
+
+supabase.auth.onAuthStateChange(
+  async function(event, session) {
+
+    await checkSellerSession();
+
+  }
+);
+
+
+/* =====================================================
+   INITIAL PAGE LOAD
+   ===================================================== */
+
+render();
+
+checkSellerSession();
+
+</script>
+
+</body>
+</html>
