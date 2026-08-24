@@ -75,8 +75,10 @@ main { max-width: 1100px; margin: 28px auto; padding: 0 5%; }
   text-align: center;
   cursor: pointer;
   user-select: none;
+  transition: all 0.2s;
 }
 .cat:hover { border-color: #0b7a53; transform: translateY(-2px); }
+.cat.active { background: #0b7a53; color: white; }
 .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .card {
   background: white;
@@ -97,7 +99,7 @@ main { max-width: 1100px; margin: 28px auto; padding: 0 5%; }
 }
 .pic img {
   max-height: 150px;
-  width: auto;
+  width: 100%;
   object-fit: cover;
 }
 .pic video {
@@ -163,6 +165,7 @@ input, select, textarea {
   border-radius: 7px;
   font-size: 15px;
   margin-bottom: 10px;
+  box-sizing: border-box;
 }
 textarea { min-height: 100px; resize: vertical; }
 .primary-btn {
@@ -173,6 +176,10 @@ textarea { min-height: 100px; resize: vertical; }
   padding: 12px 18px;
   border-radius: 7px;
   font-weight: 700;
+}
+.primary-btn:disabled {
+  background: #98a2b3;
+  cursor: not-allowed;
 }
 .secondary-btn {
   background: #667085;
@@ -510,6 +517,7 @@ const PRODUCT_VIDEOS_BUCKET = 'product-videos';
 
 let currentUser = null;
 let products = [];
+let selectedCategory = null;
 
 /* =====================================================
    UTILITY FUNCTIONS
@@ -619,7 +627,7 @@ function renderSellerProducts(sellerProducts) {
   container.innerHTML = sellerProducts.map(p => {
     const photoUrl = p.image_url;
     const photoHtml = photoUrl
-      ? `<div style="width:100%; height:80px; background:#e9eef2; border-radius:6px; margin-bottom:8px; display:flex; align-items:center; justify-content:center; overflow:hidden;"><img src="${escapeHtml(photoUrl)}" alt="" style="max-height:80px; width:auto;"></div>`
+      ? `<div style="width:100%; height:80px; background:#e9eef2; border-radius:6px; margin-bottom:8px; display:flex; align-items:center; justify-content:center; overflow:hidden;"><img src="${escapeHtml(photoUrl)}" alt="${escapeHtml(p.name)}" style="max-height:80px; width:auto; object-fit:cover;"></div>`
       : `<div style="width:100%; height:80px; background:#e9eef2; border-radius:6px; margin-bottom:8px; display:flex; align-items:center; justify-content:center; font-size:32px;">🛍️</div>`;
 
     let videoBtn = '';
@@ -641,18 +649,49 @@ function renderSellerProducts(sellerProducts) {
 }
 
 /* =====================================================
+   AUTH STATE MANAGEMENT
+   ===================================================== */
+function updateAuthState() {
+  const accountForm = document.getElementById('seller-account');
+  const loginForm = document.getElementById('seller-login');
+  const dashboard = document.getElementById('seller-dashboard');
+  const welcome = document.getElementById('seller-welcome');
+
+  if (currentUser) {
+    accountForm.classList.add('hidden');
+    loginForm.classList.add('hidden');
+    dashboard.classList.remove('hidden');
+    if (welcome) {
+      const userName = currentUser.user_metadata?.full_name || 'Seller';
+      welcome.textContent = `Welcome, ${escapeHtml(userName)}!`;
+    }
+    loadSellerProducts();
+  } else {
+    accountForm.classList.remove('hidden');
+    loginForm.classList.remove('hidden');
+    dashboard.classList.add('hidden');
+    hideAddProduct();
+  }
+}
+
+/* =====================================================
    SEARCH & CATEGORY FILTER
    ===================================================== */
 function filterProducts(query) {
   const q = (query ?? document.getElementById('search').value ?? '').toLowerCase().trim();
-  if (!q) {
-    render(products);
-    return;
+  let filtered = products;
+
+  if (q) {
+    filtered = filtered.filter(product => {
+      const text = `${product.name} ${product.location} ${product.category}`.toLowerCase();
+      return text.includes(q);
+    });
   }
-  const filtered = products.filter(product => {
-    const text = `${product.name} ${product.location} ${product.category}`.toLowerCase();
-    return text.includes(q);
-  });
+
+  if (selectedCategory) {
+    filtered = filtered.filter(product => product.category === selectedCategory);
+  }
+
   render(filtered);
 }
 
@@ -733,13 +772,13 @@ async function deleteProduct(productId) {
   if (!confirm('Are you sure you want to delete this listing?')) return;
 
   try {
-    const product = (await supabase
+    const { data: product, error: fetchError } = await supabase
       .from('products')
       .select('*')
       .eq('id', productId)
-      .single()).data;
+      .single();
 
-    if (!product) {
+    if (fetchError || !product) {
       alert('Product not found.');
       return;
     }
@@ -820,6 +859,8 @@ async function registerSeller() {
     currentUser = data.user;
     updateAuthState();
     document.getElementById('seller-password').value = '';
+    document.getElementById('seller-email').value = '';
+    document.getElementById('seller-name').value = '';
   } catch (err) {
     console.error('Registration error:', err);
     errorEl.textContent = 'An error occurred.';
@@ -851,6 +892,7 @@ async function loginSeller() {
     msgEl.textContent = 'Logged in.';
     currentUser = data.user;
     document.getElementById('login-password').value = '';
+    document.getElementById('login-email').value = '';
     updateAuthState();
   } catch (err) {
     console.error('Login error:', err);
@@ -863,6 +905,8 @@ async function logoutSeller() {
     await supabase.auth.signOut();
     currentUser = null;
     updateAuthState();
+    document.getElementById('seller-message').textContent = '';
+    document.getElementById('login-message').textContent = '';
   } catch (err) {
     console.error('Logout error:', err);
   }
@@ -901,13 +945,6 @@ function hideAddProduct() {
   if (video) video.value = '';
   document.getElementById('product-error').textContent = '';
   document.getElementById('product-message').textContent = '';
-}
-
-function readFileAsBlob(file) {
-  return new Promise((resolve, reject) => {
-    if (!file) return resolve(null);
-    resolve(file);
-  });
 }
 
 async function submitProduct() {
@@ -1000,96 +1037,74 @@ async function submitProduct() {
       .single();
 
     if (dbError) {
-      console.error('DB error:', dbError);
-      errEl.textContent = 'Failed to save product.';
+      errEl.textContent = 'Failed to add product.';
       document.getElementById('submit-product-btn').disabled = false;
       return;
     }
 
     msgEl.textContent = 'Product added successfully!';
-    await loadProducts();
     await loadSellerProducts();
-
-    setTimeout(() => {
-      hideAddProduct();
-      document.getElementById('submit-product-btn').disabled = false;
-    }, 800);
+    await loadProducts();
+    hideAddProduct();
   } catch (err) {
-    console.error('Submit error:', err);
+    console.error('Error submitting product:', err);
     errEl.textContent = 'An error occurred.';
     document.getElementById('submit-product-btn').disabled = false;
   }
 }
 
 /* =====================================================
-   AUTH UI STATE
-   ===================================================== */
-function updateAuthState() {
-  const dashboard = document.getElementById('seller-dashboard');
-  const loginBox = document.getElementById('seller-login');
-  const registerBox = document.getElementById('seller-account');
-  const welcome = document.getElementById('seller-welcome');
-
-  if (currentUser) {
-    const displayName = currentUser.user_metadata?.business_name || currentUser.user_metadata?.full_name || currentUser.email;
-    welcome.textContent = `Welcome, ${displayName}!`;
-    dashboard.classList.remove('hidden');
-    loginBox.classList.add('hidden');
-    registerBox.classList.add('hidden');
-    loadSellerProducts();
-  } else {
-    dashboard.classList.add('hidden');
-    loginBox.classList.remove('hidden');
-    registerBox.classList.remove('hidden');
-  }
-}
-
-/* =====================================================
-   EVENT BINDING & INITIALIZATION
+   EVENT LISTENERS
    ===================================================== */
 document.addEventListener('DOMContentLoaded', () => {
-  // Load products on page load
-  loadProducts();
-  checkCurrentUser();
-
-  // Search
-  document.getElementById('search-btn').addEventListener('click', () => filterProducts());
-  document.getElementById('search').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') filterProducts();
+  // Sell CTA button - scroll to seller section
+  document.getElementById('sell-cta').addEventListener('click', () => {
+    if (currentUser) {
+      document.getElementById('seller-dashboard').scrollIntoView({ behavior: 'smooth' });
+    } else {
+      document.getElementById('seller').scrollIntoView({ behavior: 'smooth' });
+    }
   });
 
-  // Categories
-  document.querySelectorAll('.cat').forEach(el => {
-    el.addEventListener('click', (e) => {
-      const cat = el.dataset.cat || el.textContent || '';
-      document.getElementById('search').value = cat;
-      filterProducts(cat);
-      document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
+  // Search functionality
+  document.getElementById('search-btn').addEventListener('click', () => {
+    selectedCategory = null;
+    document.querySelectorAll('.cat').forEach(c => c.classList.remove('active'));
+    filterProducts();
+  });
+
+  document.getElementById('search').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      selectedCategory = null;
+      document.querySelectorAll('.cat').forEach(c => c.classList.remove('active'));
+      filterProducts();
+    }
+  });
+
+  // Category filters
+  document.querySelectorAll('.cat').forEach(cat => {
+    cat.addEventListener('click', () => {
+      document.querySelectorAll('.cat').forEach(c => c.classList.remove('active'));
+      cat.classList.add('active');
+      selectedCategory = cat.dataset.cat;
+      document.getElementById('search').value = '';
+      filterProducts();
     });
   });
 
-  // Top Sell button
-  document.getElementById('sell-cta').addEventListener('click', () => {
-    document.getElementById('seller').scrollIntoView({ behavior: 'smooth' });
-  });
-
-  // Auth actions
+  // Auth buttons
   document.getElementById('create-seller-btn').addEventListener('click', registerSeller);
   document.getElementById('login-btn').addEventListener('click', loginSeller);
   document.getElementById('logout-btn').addEventListener('click', logoutSeller);
 
-  // Product add actions
-  document.getElementById('add-product-btn').addEventListener('click', () => {
-    if (!currentUser) {
-      document.getElementById('seller').scrollIntoView({ behavior: 'smooth' });
-      document.getElementById('login-error').textContent = 'Please log in or create an account to add a product.';
-      return;
-    }
-    showAddProduct();
-    document.getElementById('add-product-form').scrollIntoView({ behavior: 'smooth' });
-  });
+  // Product management
+  document.getElementById('add-product-btn').addEventListener('click', showAddProduct);
   document.getElementById('cancel-product-btn').addEventListener('click', hideAddProduct);
   document.getElementById('submit-product-btn').addEventListener('click', submitProduct);
+
+  // Initialize
+  checkCurrentUser();
+  loadProducts();
 });
 </script>
 </body>
