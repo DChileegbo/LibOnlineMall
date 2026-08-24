@@ -1,26 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>LibOnlineMall — Liberia's Online Marketplace</title>
-
-<meta name="description"
-      content="LibOnlineMall — Buy and sell products and services in Liberia.">
+<meta name="description" content="LibOnlineMall — Buy and sell products and services in Liberia." />
 
 <style>
-* {
-  box-sizing: border-box;
-}
-
+* { box-sizing: border-box; }
 body {
   margin: 0;
   font-family: Arial, sans-serif;
   background: #f5f7f9;
   color: #18212b;
+  -webkit-font-smoothing:antialiased;
 }
-
 header {
   background: #0b7a53;
   color: white;
@@ -29,7 +23,6 @@ header {
   top: 0;
   z-index: 5;
 }
-
 .nav {
   max-width: 1100px;
   margin: auto;
@@ -38,21 +31,9 @@ header {
   align-items: center;
   gap: 15px;
 }
-
-.logo {
-  font-size: 24px;
-  font-weight: 800;
-}
-
-.tag {
-  font-size: 12px;
-  opacity: .9;
-}
-
-button {
-  cursor: pointer;
-}
-
+.logo { font-size: 24px; font-weight: 800; }
+.tag { font-size: 12px; opacity: .9; }
+button { cursor: pointer; }
 .sell {
   background: white;
   color: #0b7a53;
@@ -61,32 +42,14 @@ button {
   padding: 11px 15px;
   font-weight: 700;
 }
-
 .hero {
   background: white;
   padding: 45px 5% 30px;
 }
-
-.hero-inner {
-  max-width: 1100px;
-  margin: auto;
-}
-
-h1 {
-  font-size: 38px;
-  margin: 0 0 10px;
-}
-
-.hero p {
-  color: #667085;
-}
-
-.search {
-  display: flex;
-  max-width: 700px;
-  margin-top: 22px;
-}
-
+.hero-inner { max-width: 1100px; margin: auto; }
+h1 { font-size: 38px; margin: 0 0 10px; }
+.hero p { color: #667085; }
+.search { display: flex; max-width: 700px; margin-top: 22px; }
 .search input {
   flex: 1;
   padding: 15px;
@@ -94,7 +57,6 @@ h1 {
   border-radius: 8px 0 0 8px;
   font-size: 16px;
 }
-
 .search button {
   padding: 0 20px;
   border: 0;
@@ -102,26 +64,9 @@ h1 {
   color: white;
   border-radius: 0 8px 8px 0;
 }
-
-main {
-  max-width: 1100px;
-  margin: 28px auto;
-  padding: 0 5%;
-}
-
-.section-title {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 25px 0 15px;
-}
-
-.categories {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-}
-
+main { max-width: 1100px; margin: 28px auto; padding: 0 5%; }
+.section-title { display: flex; justify-content: space-between; align-items: center; margin: 25px 0 15px; }
+.categories { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
 .cat {
   background: white;
   border: 1px solid #e4e7ec;
@@ -129,26 +74,18 @@ main {
   padding: 16px;
   text-align: center;
   cursor: pointer;
+  user-select: none;
 }
-
-.cat:hover {
-  border-color: #0b7a53;
-  transform: translateY(-2px);
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-}
-
+.cat:hover { border-color: #0b7a53; transform: translateY(-2px); }
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .card {
   background: white;
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid #e4e7ec;
+  display: flex;
+  flex-direction: column;
 }
-
 .pic {
   height: 150px;
   background: #e9eef2;
@@ -157,24 +94,9 @@ main {
   justify-content: center;
   font-size: 42px;
 }
-
-.body {
-  padding: 14px;
-}
-
-.price {
-  font-size: 19px;
-  font-weight: 800;
-  color: #0b7a53;
-  margin-top: 6px;
-}
-
-.meta {
-  font-size: 13px;
-  color: #667085;
-  margin-top: 6px;
-}
-
+.body { padding: 14px; flex: 1; display:flex; flex-direction:column; }
+.price { font-size: 19px; font-weight: 800; color: #0b7a53; margin-top: 6px; }
+.meta { font-size: 13px; color: #667085; margin-top: 6px; }
 .contact {
   display: block;
   text-align: center;
@@ -183,9 +105,12 @@ main {
   text-decoration: none;
   padding: 10px;
   border-radius: 7px;
-  margin-top: 12px;
+  margin-top: auto;
 }
-
+.contact.disabled {
+  background: #98a2b3;
+  pointer-events: none;
+}
 .form-box {
   background: white;
   padding: 20px;
@@ -194,10 +119,7 @@ main {
   max-width: 650px;
   margin-bottom: 20px;
 }
-
-input,
-select,
-textarea {
+input, select, textarea {
   width: 100%;
   padding: 12px;
   border: 1px solid #d0d5dd;
@@ -205,12 +127,7 @@ textarea {
   font-size: 15px;
   margin-bottom: 10px;
 }
-
-textarea {
-  min-height: 100px;
-  resize: vertical;
-}
-
+textarea { min-height: 100px; resize: vertical; }
 .primary-btn {
   margin-top: 5px;
   background: #0b7a53;
@@ -220,7 +137,6 @@ textarea {
   border-radius: 7px;
   font-weight: 700;
 }
-
 .secondary-btn {
   background: #667085;
   color: white;
@@ -229,7 +145,6 @@ textarea {
   border-radius: 7px;
   font-weight: 700;
 }
-
 .danger-btn {
   background: #b42318;
   color: white;
@@ -238,7 +153,6 @@ textarea {
   border-radius: 7px;
   font-weight: 700;
 }
-
 .note {
   background: #fff8e6;
   border: 1px solid #f2d28b;
@@ -247,13 +161,7 @@ textarea {
   font-size: 14px;
   margin-bottom: 15px;
 }
-
-.message {
-  margin-top: 12px;
-  font-size: 14px;
-  font-weight: 600;
-}
-
+.message { margin-top: 12px; font-size: 14px; font-weight: 600; color: #0b7a53; }
 .dashboard {
   background: white;
   border: 1px solid #e4e7ec;
@@ -261,12 +169,7 @@ textarea {
   padding: 20px;
   margin-top: 20px;
 }
-
-#seller,
-#seller-dashboard {
-  scroll-margin-top: 90px;
-}
-
+#seller, #seller-dashboard { scroll-margin-top: 90px; }
 footer {
   margin-top: 50px;
   background: #17212b;
@@ -274,1288 +177,634 @@ footer {
   padding: 30px 5%;
   text-align: center;
 }
-
-.hidden {
-  display: none !important;
-}
-
+.hidden { display: none !important; }
 @media(max-width:700px) {
-
-  h1 {
-    font-size: 29px;
-  }
-
-  .categories {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .grid {
-    grid-template-columns: 1fr;
-  }
-
-  .nav {
-    align-items: flex-start;
-  }
-
-  .logo {
-    font-size: 20px;
-  }
-
-  .sell {
-    padding: 9px 11px;
-  }
-
-  .search {
-    width: 100%;
-  }
+  h1 { font-size: 29px; }
+  .categories { grid-template-columns: repeat(2, 1fr); }
+  .grid { grid-template-columns: 1fr; }
+  .nav { align-items: flex-start; }
+  .logo { font-size: 20px; }
+  .sell { padding: 9px 11px; }
+  .search { width: 100%; }
 }
+.form-error { color: #b42318; font-weight:600; margin-top:8px;}
+.small { font-size:13px; color:#667085;}
 </style>
 </head>
-
 <body>
 
 <!-- ================= HEADER ================= -->
-
 <header>
-
   <div class="nav">
-
     <div>
       <div class="logo">🇱🇷 LibOnlineMall</div>
       <div class="tag">Liberia's Online Marketplace</div>
     </div>
 
-    <button
-      class="sell"
-      onclick="document.getElementById('seller').scrollIntoView({behavior:'smooth'})">
-      + Sell Something
-    </button>
-
+    <button class="sell" id="sell-cta">+ Sell Something</button>
   </div>
-
 </header>
 
-
 <!-- ================= HERO ================= -->
-
 <section class="hero">
-
   <div class="hero-inner">
-
     <h1>Buy & Sell in Liberia.</h1>
+    <p>Find products and services from sellers across Liberia.</p>
 
-    <p>
-      Find products and services from sellers across Liberia.
-    </p>
-
-    <div class="search">
-
-      <input
-        id="search"
-        type="text"
-        placeholder="Search phones, shoes, cars, furniture..."
-        oninput="filterProducts()"
-      >
-
-      <button onclick="filterProducts()">
-        Search
-      </button>
-
+    <div class="search" role="search" aria-label="Search products">
+      <input id="search" type="text"
+             placeholder="Search phones, shoes, cars, furniture..."
+             aria-label="Search products"
+      />
+      <button id="search-btn">Search</button>
     </div>
-
   </div>
-
 </section>
 
-
 <!-- ================= MAIN ================= -->
-
 <main>
-
-
   <!-- CATEGORIES -->
-
   <div class="section-title">
     <h2>Categories</h2>
   </div>
 
-  <div class="categories">
-
-    <div class="cat" onclick="choose('Electronics')">
-      📱<br>Electronics
-    </div>
-
-    <div class="cat" onclick="choose('Fashion')">
-      👕<br>Fashion
-    </div>
-
-    <div class="cat" onclick="choose('Vehicles')">
-      🚗<br>Vehicles
-    </div>
-
-    <div class="cat" onclick="choose('Home')">
-      🛋️<br>Home & Furniture
-    </div>
-
-    <div class="cat" onclick="choose('Computers')">
-      💻<br>Computers
-    </div>
-
-    <div class="cat" onclick="choose('Sports')">
-      🏋️<br>Sports
-    </div>
-
-    <div class="cat" onclick="choose('Property')">
-      🏠<br>Property
-    </div>
-
-    <div class="cat" onclick="choose('Services')">
-      🔧<br>Services
-    </div>
-
+  <div class="categories" id="categories">
+    <div class="cat" data-cat="Electronics">📱<br>Electronics</div>
+    <div class="cat" data-cat="Fashion">👕<br>Fashion</div>
+    <div class="cat" data-cat="Vehicles">🚗<br>Vehicles</div>
+    <div class="cat" data-cat="Home">🛋️<br>Home & Furniture</div>
+    <div class="cat" data-cat="Computers">💻<br>Computers</div>
+    <div class="cat" data-cat="Sports">🏋️<br>Sports</div>
+    <div class="cat" data-cat="Property">🏠<br>Property</div>
+    <div class="cat" data-cat="Services">🔧<br>Services</div>
   </div>
 
-
   <!-- LISTINGS -->
-
   <div class="section-title">
     <h2>Latest Listings</h2>
   </div>
 
-  <div id="products" class="grid"></div>
-
+  <div id="products" class="grid" aria-live="polite"></div>
 
   <!-- ================= SELLER AREA ================= -->
-
   <div id="seller" class="section-title">
-
     <h2>Sell on LibOnlineMall</h2>
-
   </div>
 
-  <div class="note">
-
-    Create a seller account to list your products on LibOnlineMall.
-
-  </div>
-
+  <div class="note">Create a seller account to list your products on LibOnlineMall.</div>
 
   <!-- ================= REGISTER ================= -->
-
   <div id="seller-account" class="form-box">
-
     <h3>Create a Seller Account</h3>
+    <label class="small">Full name</label>
+    <input id="seller-name" type="text" placeholder="Full name" aria-label="Full name" />
 
-    <input
-      id="seller-name"
-      type="text"
-      placeholder="Full name"
-    >
+    <label class="small">Business name (optional)</label>
+    <input id="seller-business" type="text" placeholder="Business name (optional)" />
 
-    <input
-      id="seller-business"
-      type="text"
-      placeholder="Business name (optional)"
-    >
+    <label class="small">WhatsApp number</label>
+    <input id="seller-phone" type="tel" placeholder="WhatsApp number" />
 
-    <input
-      id="seller-phone"
-      type="tel"
-      placeholder="WhatsApp number"
-    >
+    <label class="small">Location</label>
+    <input id="seller-location" type="text" placeholder="Location" />
 
-    <input
-      id="seller-location"
-      type="text"
-      placeholder="Location"
-    >
+    <label class="small">Email address</label>
+    <input id="seller-email" type="email" placeholder="Email address" />
 
-    <input
-      id="seller-email"
-      type="email"
-      placeholder="Email address"
-    >
+    <label class="small">Password (minimum 6 characters)</label>
+    <input id="seller-password" type="password" placeholder="Password (minimum 6 characters)" />
 
-    <input
-      id="seller-password"
-      type="password"
-      placeholder="Password (minimum 6 characters)"
-    >
-
-    <button
-      type="button"
-      class="primary-btn"
-      onclick="registerSeller()">
-      Create Seller Account
-    </button>
-
-    <p
-      id="seller-message"
-      class="message">
-    </p>
-
+    <button type="button" class="primary-btn" id="create-seller-btn">Create Seller Account</button>
+    <p id="seller-message" class="message" aria-live="polite"></p>
+    <p id="seller-error" class="form-error" aria-live="polite"></p>
   </div>
-
 
   <!-- ================= LOGIN ================= -->
-
   <div id="seller-login" class="form-box">
-
     <h3>Seller Login</h3>
 
-    <input
-      id="login-email"
-      type="email"
-      placeholder="Email address"
-    >
+    <label class="small">Email address</label>
+    <input id="login-email" type="email" placeholder="Email address" />
 
-    <input
-      id="login-password"
-      type="password"
-      placeholder="Password"
-    >
+    <label class="small">Password</label>
+    <input id="login-password" type="password" placeholder="Password" />
 
-    <button
-      type="button"
-      class="primary-btn"
-      onclick="loginSeller()">
-      Login
-    </button>
-
-    <p
-      id="login-message"
-      class="message">
-    </p>
-
+    <button type="button" class="primary-btn" id="login-btn">Login</button>
+    <p id="login-message" class="message" aria-live="polite"></p>
+    <p id="login-error" class="form-error" aria-live="polite"></p>
   </div>
 
-
   <!-- ================= SELLER DASHBOARD ================= -->
-
-  <section
-    id="seller-dashboard"
-    class="dashboard hidden">
-
+  <section id="seller-dashboard" class="dashboard hidden" aria-live="polite">
     <div class="section-title">
-
       <h2>Seller Dashboard</h2>
-
-      <button
-        class="danger-btn"
-        onclick="logoutSeller()">
-        Logout
-      </button>
-
+      <button class="danger-btn" id="logout-btn">Logout</button>
     </div>
 
-    <h3 id="seller-welcome">
-      Welcome, Seller!
-    </h3>
+    <h3 id="seller-welcome">Welcome, Seller!</h3>
+    <p>Manage your LibOnlineMall account and products here.</p>
 
-    <p>
-      Manage your LibOnlineMall account and products here.
-    </p>
-
-    <button
-      class="primary-btn"
-      onclick="showAddProduct()">
-      + Add Product
-    </button>
-
+    <button class="primary-btn" id="add-product-btn">+ Add Product</button>
 
     <!-- ADD PRODUCT -->
-
-    <div
-      id="add-product-form"
-      class="form-box hidden"
-      style="margin-top:20px;">
-
+    <div id="add-product-form" class="form-box hidden" style="margin-top:20px;">
       <h3>Add Product</h3>
 
-      <input
-        id="product-name"
-        type="text"
-        placeholder="Product name"
-      >
+      <label class="small">Product name</label>
+      <input id="product-name" type="text" placeholder="Product name" />
 
-      <input
-        id="product-price"
-        type="number"
-        min="0"
-        step="0.01"
-        placeholder="Price (USD)"
-      >
+      <label class="small">Price (USD)</label>
+      <input id="product-price" type="number" min="0" step="0.01" placeholder="Price (USD)" />
 
+      <label class="small">Category</label>
       <select id="product-category">
-
-        <option value="">
-          Select Category
-        </option>
-
-        <option value="Electronics">
-          Electronics
-        </option>
-
-        <option value="Phones">
-          Phones
-        </option>
-
-        <option value="Fashion">
-          Fashion
-        </option>
-
-        <option value="Home">
-          Home
-        </option>
-
-        <option value="Vehicles">
-          Vehicles
-        </option>
-
-        <option value="Sports">
-          Sports
-        </option>
-
-        <option value="Computers">
-          Computers
-        </option>
-
-        <option value="Property">
-          Property
-        </option>
-
-        <option value="Services">
-          Services
-        </option>
-
-        <option value="Other">
-          Other
-        </option>
-
+        <option value="">Select Category</option>
+        <option>Electronics</option>
+        <option>Phones</option>
+        <option>Fashion</option>
+        <option>Home</option>
+        <option>Vehicles</option>
+        <option>Sports</option>
+        <option>Computers</option>
+        <option>Property</option>
+        <option>Services</option>
+        <option>Other</option>
       </select>
 
-      <input
-        id="product-location"
-        type="text"
-        placeholder="Location"
-      >
+      <label class="small">Location</label>
+      <input id="product-location" type="text" placeholder="Location" />
 
-      <input
-        id="product-whatsapp"
-        type="tel"
-        placeholder="WhatsApp Number"
-      >
+      <label class="small">WhatsApp Number</label>
+      <input id="product-whatsapp" type="tel" placeholder="WhatsApp Number" />
 
-      <textarea
-        id="product-description"
-        placeholder="Describe your product">
-      </textarea>
+      <label class="small">Describe your product</label>
+      <textarea id="product-description" placeholder="Describe your product"></textarea>
 
-      <p>
-        <strong>Product Photo</strong>
-      </p>
+      <p><strong>Product Photo</strong></p>
+      <input id="product-photo" type="file" accept="image/*" />
 
-      <input
-        id="product-photo"
-        type="file"
-        accept="image/*"
-      >
+      <p><strong>Product Video (Optional)</strong></p>
+      <input id="product-video" type="file" accept="video/mp4,video/quicktime" />
+      <p class="small">Maximum: 1 video • 60 seconds • 25 MB</p>
 
-      <p>
-        <strong>Product Video (Optional)</strong>
-      </p>
+      <button class="primary-btn" id="submit-product-btn">Submit for Approval</button>
+      <button class="secondary-btn" id="cancel-product-btn" type="button">Cancel</button>
 
-      <input
-        id="product-video"
-        type="file"
-        accept="video/mp4,video/quicktime"
-      >
-
-      <p style="font-size:13px;color:#667085;">
-        Maximum: 1 video • 60 seconds • 25 MB
-      </p>
-
-      <button
-        class="primary-btn"
-        onclick="submitProduct()">
-        Submit for Approval
-      </button>
-
-      <button
-        class="secondary-btn"
-        onclick="hideAddProduct()">
-        Cancel
-      </button>
-
-      <p
-        id="product-message"
-        class="message">
-      </p>
-
+      <p id="product-message" class="message" aria-live="polite"></p>
+      <p id="product-error" class="form-error" aria-live="polite"></p>
     </div>
-
   </section>
 
 </main>
 
-
 <!-- ================= FOOTER ================= -->
-
 <footer>
-
-  <strong>LibOnlineMall</strong>
-
-  <br>
-
-  Buy & sell in Liberia.
-
-  <br><br>
-
+  <strong>LibOnlineMall</strong><br>
+  Buy & sell in Liberia.<br><br>
   Prototype — more features coming.
-
 </footer>
 
-
-<!-- ================= SUPABASE ================= -->
-
+<!-- ================= OPTIONAL SUPABASE SDK (kept as optional) ================= -->
+<!-- If you intend to use Supabase storage/auth replace the placeholders below and use `supabase` within the JS.
+     For this demo page, core flows use localStorage as a lightweight fallback. -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-
 <script>
-
 /* =====================================================
-   SUPABASE CONFIGURATION
+   CLIENT-SIDE "BACKEND" (localStorage fallback demo)
    ===================================================== */
 
-const SUPABASE_URL =
-  "https://gvzxefrmhvqmkehbrult.supabase.co";
+/*
+  Storage keys:
+  - lom_products
+  - lom_sellers
+  - lom_current_seller
+*/
 
-const SUPABASE_PUBLISHABLE_KEY =
-  "sb_publishable_uelg3cyss3Odnl9nuqeZ6w_rryTkSJC";
+const STORAGE_PRODUCTS_KEY = 'lom_products';
+const STORAGE_SELLERS_KEY = 'lom_sellers';
+const STORAGE_CURRENT_SELLER = 'lom_current_seller';
 
-
-if (typeof window.supabase === "undefined") {
-  alert("SUPABASE LIBRARY DID NOT LOAD");
-} else {
-  alert("SUPABASE LIBRARY LOADED");
-}
-
-const supabase =
-  window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY
-  );
-/* =====================================================
-   DEMO PRODUCTS
-   ===================================================== */
-
-const products = [
-
-  {
-    name: "iPhone 13",
-    price: "$450",
-    location: "Monrovia",
-    cat: "Electronics",
-    icon: "📱",
-    whatsapp: ""
-  },
-
-  {
-    name: "Nike Running Shoes",
-    price: "$35",
-    location: "Paynesville",
-    cat: "Fashion",
-    icon: "👟",
-    whatsapp: ""
-  },
-
-  {
-    name: "Office Chair",
-    price: "$65",
-    location: "Sinkor",
-    cat: "Home",
-    icon: "🪑",
-    whatsapp: ""
-  },
-
-  {
-    name: "Laptop Computer",
-    price: "$280",
-    location: "Monrovia",
-    cat: "Computers",
-    icon: "💻",
-    whatsapp: ""
-  },
-
-  {
-    name: "Football Boots",
-    price: "$40",
-    location: "Congo Town",
-    cat: "Sports",
-    icon: "⚽",
-    whatsapp: ""
-  },
-
-  {
-    name: "Toyota Corolla",
-    price: "$7,500",
-    location: "Paynesville",
-    cat: "Vehicles",
-    icon: "🚗",
-    whatsapp: ""
-  }
-
+/* Demo starter products */
+const DEFAULT_PRODUCTS = [
+  { id: genId(), name: "iPhone 13", price: 450, location: "Monrovia", cat: "Electronics", icon: "📱", whatsapp: "", photo: "", sellerEmail: "" },
+  { id: genId(), name: "Nike Running Shoes", price: 35, location: "Paynesville", cat: "Fashion", icon: "👟", whatsapp: "", photo: "", sellerEmail: "" },
+  { id: genId(), name: "Office Chair", price: 65, location: "Sinkor", cat: "Home", icon: "🪑", whatsapp: "", photo: "", sellerEmail: "" },
+  { id: genId(), name: "Laptop Computer", price: 280, location: "Monrovia", cat: "Computers", icon: "💻", whatsapp: "", photo: "", sellerEmail: "" },
+  { id: genId(), name: "Football Boots", price: 40, location: "Congo Town", cat: "Sports", icon: "⚽", whatsapp: "", photo: "", sellerEmail: "" },
+  { id: genId(), name: "Toyota Corolla", price: 7500, location: "Paynesville", cat: "Vehicles", icon: "🚗", whatsapp: "", photo: "", sellerEmail: "" }
 ];
 
+/* Utility functions */
+function genId() {
+  return 'p_' + Math.random().toString(36).slice(2, 10);
+}
+
+function loadProducts() {
+  try {
+    const raw = localStorage.getItem(STORAGE_PRODUCTS_KEY);
+    if (!raw) {
+      saveProducts(DEFAULT_PRODUCTS);
+      return DEFAULT_PRODUCTS.slice();
+    }
+    return JSON.parse(raw);
+  } catch (err) {
+    console.error('Failed to load products:', err);
+    return DEFAULT_PRODUCTS.slice();
+  }
+}
+
+function saveProducts(list) {
+  localStorage.setItem(STORAGE_PRODUCTS_KEY, JSON.stringify(list));
+}
+
+function loadSellers() {
+  try {
+    const raw = localStorage.getItem(STORAGE_SELLERS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (err) {
+    console.error('Failed to load sellers:', err);
+    return [];
+  }
+}
+
+function saveSellers(list) {
+  localStorage.setItem(STORAGE_SELLERS_KEY, JSON.stringify(list));
+}
+
+function setCurrentSeller(email) {
+  localStorage.setItem(STORAGE_CURRENT_SELLER, email);
+}
+function getCurrentSeller() {
+  return localStorage.getItem(STORAGE_CURRENT_SELLER);
+}
+function clearCurrentSeller() {
+  localStorage.removeItem(STORAGE_CURRENT_SELLER);
+}
 
 /* =====================================================
-   DISPLAY PRODUCTS
+   ESCAPE HTML (XSS-safe insertion for text content)
    ===================================================== */
+function escapeHtml(value) {
+  if (value === null || value === undefined) return "";
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+/* =====================================================
+   WHATSAPP LINK CREATION
+   - Accept various local formats; convert leading 0 -> 231
+   - Return null if invalid/no number
+   ===================================================== */
+function whatsappUrlFromRaw(raw) {
+  if (!raw) return null;
+  const digits = String(raw).replace(/\D/g, '');
+  if (!digits) return null;
+  let num = digits;
+  if (num.startsWith('0')) {
+    num = '231' + num.substring(1); // Liberia country code
+  }
+  // Very small sanity check length
+  if (num.length < 7) return null;
+  return 'https://wa.me/' + num;
+}
+
+/* =====================================================
+   PRICE FORMATTING
+   ===================================================== */
+const usdFmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+function formatPrice(value) {
+  if (value === null || value === undefined || value === '') return '';
+  if (typeof value === 'number' && !Number.isNaN(value)) {
+    return usdFmt.format(value);
+  }
+  const n = Number(String(value).replace(/[^0-9.-]+/g, ''));
+  return Number.isNaN(n) ? escapeHtml(String(value)) : usdFmt.format(n);
+}
+
+/* =====================================================
+   RENDER PRODUCTS
+   ===================================================== */
+let products = loadProducts();
 
 function render(list = products) {
-
-  const container =
-    document.getElementById("products");
-
+  const container = document.getElementById('products');
   if (!container) return;
-
-  if (list.length === 0) {
-
+  if (!list || list.length === 0) {
     container.innerHTML = `
       <div class="form-box">
         <strong>No products found.</strong>
-        <p>Try another search.</p>
+        <p>Try another search, or add a product.</p>
       </div>
     `;
-
     return;
   }
 
-
   container.innerHTML = list.map(product => {
+    const photoHtml = product.photo
+      ? `<div class="pic"><img src="${escapeHtml(product.photo)}" alt="${escapeHtml(product.name)}" style="max-height:150px; width:auto; object-fit:cover;"></div>`
+      : `<div class="pic">${product.icon || '🛍️'}</div>`;
 
-    let whatsappLink = "#";
-
-    if (product.whatsapp) {
-
-      let number =
-        product.whatsapp.replace(/\D/g, "");
-
-      if (number.startsWith("0")) {
-        number =
-          "231" + number.substring(1);
-      }
-
-      whatsappLink =
-        "https://wa.me/" + number;
-    }
-
+    const whatsappLink = whatsappUrlFromRaw(product.whatsapp);
 
     return `
-
-      <div class="card">
-
-        <div class="pic">
-          ${product.icon || "🛍️"}
-        </div>
-
+      <div class="card" aria-label="${escapeHtml(product.name)}">
+        ${photoHtml}
         <div class="body">
-
-          <strong>
-            ${escapeHtml(product.name)}
-          </strong>
-
-          <div class="price">
-            ${escapeHtml(product.price)}
-          </div>
-
-          <div class="meta">
-            ${escapeHtml(product.location)}
-            ·
-            ${escapeHtml(product.cat)}
-          </div>
-
-          ${
-            product.whatsapp
-            ?
-            `<a
-              class="contact"
-              href="${whatsappLink}"
-              target="_blank"
-              rel="noopener">
-              💬 Contact Seller
-            </a>`
-            :
-            `<div
-              class="contact"
-              style="background:#98a2b3;">
-              Contact Seller
-            </div>`
+          <strong>${escapeHtml(product.name)}</strong>
+          <div class="price">${formatPrice(product.price)}</div>
+          <div class="meta">${escapeHtml(product.location)} · ${escapeHtml(product.cat)}</div>
+          ${whatsappLink
+            ? `<a class="contact" href="${escapeHtml(whatsappLink)}" target="_blank" rel="noopener">💬 Contact Seller</a>`
+            : `<div class="contact disabled">Contact Seller</div>`
           }
-
         </div>
-
       </div>
-
     `;
-
-  }).join("");
-
+  }).join('');
 }
 
-
 /* =====================================================
-   SEARCH
+   SEARCH & CATEGORY FILTER
    ===================================================== */
-
-function filterProducts() {
-
-  const searchInput =
-    document.getElementById("search");
-
-  const query =
-    searchInput.value
-      .toLowerCase()
-      .trim();
-
-
-  const filtered =
-    products.filter(product => {
-
-      const text =
-        (
-          product.name +
-          " " +
-          product.location +
-          " " +
-          product.cat
-        ).toLowerCase();
-
-      return text.includes(query);
-
-    });
-
-
+function filterProducts(query) {
+  const q = (query ?? document.getElementById('search').value ?? '').toLowerCase().trim();
+  if (!q) {
+    render(products);
+    return;
+  }
+  const filtered = products.filter(product => {
+    const text = `${product.name} ${product.location} ${product.cat}`.toLowerCase();
+    return text.includes(q);
+  });
   render(filtered);
 }
 
-
 /* =====================================================
-   CATEGORY FILTER
+   SELLER AUTH (client-side demo)
+   - Uses SHA-256 password hashing via SubtleCrypto for storage
    ===================================================== */
-
-function choose(category) {
-
-  document.getElementById("search").value =
-    category;
-
-  filterProducts();
-
-  document
-    .getElementById("products")
-    .scrollIntoView({
-      behavior: "smooth"
-    });
-
+async function sha256Hex(text) {
+  const enc = new TextEncoder();
+  const data = enc.encode(String(text));
+  const hash = await crypto.subtle.digest('SHA-256', data);
+  const bytes = new Uint8Array(hash);
+  return Array.from(bytes).map(b => b.toString(16).padStart(2,'0')).join('');
 }
-
-
-/* =====================================================
-   ESCAPE HTML
-   ===================================================== */
-
-function escapeHtml(value) {
-
-  if (value === null ||
-      value === undefined) {
-    return "";
-  }
-
-  return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-
-}
-
-
-/* =====================================================
-   REGISTER SELLER
-   ===================================================== */
 
 async function registerSeller() {
+  const name = (document.getElementById('seller-name').value || '').trim();
+  const business = (document.getElementById('seller-business').value || '').trim();
+  const phone = (document.getElementById('seller-phone').value || '').trim();
+  const location = (document.getElementById('seller-location').value || '').trim();
+  const email = (document.getElementById('seller-email').value || '').trim().toLowerCase();
+  const password = (document.getElementById('seller-password').value || '');
 
-  const name =
-    document
-      .getElementById("seller-name")
-      .value
-      .trim();
+  const errorEl = document.getElementById('seller-error');
+  const msgEl = document.getElementById('seller-message');
+  errorEl.textContent = '';
+  msgEl.textContent = '';
 
-  const business =
-    document
-      .getElementById("seller-business")
-      .value
-      .trim();
+  if (!name) { errorEl.textContent = 'Please enter your full name.'; return; }
+  if (!email || !/^\S+@\S+\.\S+$/.test(email)) { errorEl.textContent = 'Enter a valid email.'; return; }
+  if (!password || password.length < 6) { errorEl.textContent = 'Password must be at least 6 characters.'; return; }
 
-  const phone =
-    document
-      .getElementById("seller-phone")
-      .value
-      .trim();
-
-  const location =
-    document
-      .getElementById("seller-location")
-      .value
-      .trim();
-
-  const email =
-    document
-      .getElementById("seller-email")
-      .value
-      .trim();
-
-  const password =
-    document
-      .getElementById("seller-password")
-      .value;
-
-  const message =
-    document.getElementById("seller-message");
-
-
-  if (
-    !name ||
-    !phone ||
-    !location ||
-    !email ||
-    !password
-  ) {
-
-    message.textContent =
-      "Please complete all required fields.";
-
+  const sellers = loadSellers();
+  if (sellers.some(s => s.email === email)) {
+    errorEl.textContent = 'An account with that email already exists.';
     return;
   }
 
+  const pwHash = await sha256Hex(password);
+  const seller = {
+    name, business, phone, location, email, passwordHash: pwHash, createdAt: new Date().toISOString()
+  };
+  sellers.push(seller);
+  saveSellers(sellers);
 
-  if (password.length < 6) {
-
-    message.textContent =
-      "Password must be at least 6 characters.";
-
-    return;
-  }
-
-
-  message.textContent =
-    "Creating your seller account...";
-
-
-  const {
-    data,
-    error
-  } =
-    await supabase.auth.signUp({
-
-      email: email,
-
-      password: password,
-
-      options: {
-
-        data: {
-
-          full_name: name,
-
-          phone: phone,
-
-          business_name: business,
-
-          location: location
-
-        }
-
-      }
-
-    });
-
-
-  if (error) {
-
-    message.textContent =
-      error.message;
-
-    return;
-  }
-
-
-  message.textContent =
-    "Account created! Please check your email to confirm your account.";
-
+  msgEl.textContent = 'Account created. You are now logged in.';
+  setCurrentSeller(email);
+  updateAuthState();
+  // clear sensitive fields
+  document.getElementById('seller-password').value = '';
 }
-
-
-/* =====================================================
-   SELLER LOGIN
-   ===================================================== */
 
 async function loginSeller() {
+  const email = (document.getElementById('login-email').value || '').trim().toLowerCase();
+  const password = (document.getElementById('login-password').value || '');
 
-  const email =
-    document
-      .getElementById("login-email")
-      .value
-      .trim();
+  const errorEl = document.getElementById('login-error');
+  const msgEl = document.getElementById('login-message');
+  errorEl.textContent = '';
+  msgEl.textContent = '';
 
-  const password =
-    document
-      .getElementById("login-password")
-      .value;
+  if (!email || !password) { errorEl.textContent = 'Enter email and password.'; return; }
 
-  const message =
-    document.getElementById("login-message");
+  const sellers = loadSellers();
+  const seller = sellers.find(s => s.email === email);
+  if (!seller) { errorEl.textContent = 'No account found for that email.'; return; }
 
-
-  if (!email || !password) {
-
-    message.textContent =
-      "Please enter your email and password.";
-
+  const pwHash = await sha256Hex(password);
+  if (pwHash !== seller.passwordHash) {
+    errorEl.textContent = 'Invalid email or password.';
     return;
   }
 
-
-  message.textContent =
-    "Logging in...";
-
-
-  const {
-    data,
-    error
-  } =
-    await supabase.auth.signInWithPassword({
-
-      email: email,
-
-      password: password
-
-    });
-
-
-  if (error) {
-
-    message.textContent =
-      error.message;
-
-    return;
-  }
-
-
-  message.textContent =
-    "Login successful!";
-
-
-  await checkSellerSession();
-
-
-  document
-    .getElementById("seller-dashboard")
-    .scrollIntoView({
-      behavior: "smooth"
-    });
-
+  setCurrentSeller(email);
+  msgEl.textContent = 'Logged in.';
+  document.getElementById('login-password').value = '';
+  updateAuthState();
 }
 
-
-/* =====================================================
-   LOGOUT
-   ===================================================== */
-
-async function logoutSeller() {
-
-  const {
-    error
-  } =
-    await supabase.auth.signOut();
-
-
-  if (error) {
-
-    alert(error.message);
-
-    return;
-  }
-
-
-  checkSellerSession();
-
-
-  window.location.hash =
-    "seller";
-
+function logoutSeller() {
+  clearCurrentSeller();
+  updateAuthState();
+  document.getElementById('seller-message').textContent = '';
 }
 
-
 /* =====================================================
-   CHECK SELLER SESSION
+   PRODUCT ADD FLOW
    ===================================================== */
-
-async function checkSellerSession() {
-
-  const {
-    data: {
-      session
-    }
-  } =
-    await supabase.auth.getSession();
-
-
-  const dashboard =
-    document.getElementById(
-      "seller-dashboard"
-    );
-
-  const account =
-    document.getElementById(
-      "seller-account"
-    );
-
-  const login =
-    document.getElementById(
-      "seller-login"
-    );
-
-
-  if (!dashboard) return;
-
-
-  if (session) {
-
-    dashboard.classList.remove(
-      "hidden"
-    );
-
-    account.classList.add(
-      "hidden"
-    );
-
-    login.classList.add(
-      "hidden"
-    );
-
-
-    const user =
-      session.user;
-
-
-    const name =
-      user.user_metadata &&
-      user.user_metadata.full_name
-      ?
-      user.user_metadata.full_name
-      :
-      user.email;
-
-
-    document.getElementById(
-      "seller-welcome"
-    ).textContent =
-      "Welcome, " + name + "!";
-
-
-  } else {
-
-    dashboard.classList.add(
-      "hidden"
-    );
-
-    account.classList.remove(
-      "hidden"
-    );
-
-    login.classList.remove(
-      "hidden"
-    );
-
-  }
-
-}
-
-
-/* =====================================================
-   SHOW ADD PRODUCT FORM
-   ===================================================== */
-
 function showAddProduct() {
-  document.getElementById("add-product-form").classList.remove("hidden");
+  document.getElementById('add-product-form').classList.remove('hidden');
+  document.getElementById('product-error').textContent = '';
+  document.getElementById('product-message').textContent = '';
 }
-
-     
-/* =====================================================
-   HIDE ADD PRODUCT FORM
-   ===================================================== */
 
 function hideAddProduct() {
-
-  document
-    .getElementById("add-product-form")
-    .classList.add("hidden");
-
+  document.getElementById('add-product-form').classList.add('hidden');
+  // clear fields
+  ['product-name','product-price','product-category','product-location','product-whatsapp','product-description'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  const photo = document.getElementById('product-photo');
+  const video = document.getElementById('product-video');
+  if (photo) photo.value = '';
+  if (video) video.value = '';
+  document.getElementById('product-error').textContent = '';
+  document.getElementById('product-message').textContent = '';
 }
 
-
-/* =====================================================
-   SUBMIT PRODUCT
-   ===================================================== */
+function readFileAsDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    if (!file) return resolve(null);
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 
 async function submitProduct() {
+  const name = (document.getElementById('product-name').value || '').trim();
+  const priceRaw = document.getElementById('product-price').value;
+  const price = priceRaw === '' ? null : parseFloat(priceRaw);
+  const cat = (document.getElementById('product-category').value || '').trim();
+  const location = (document.getElementById('product-location').value || '').trim();
+  const whatsapp = (document.getElementById('product-whatsapp').value || '').trim();
+  const description = (document.getElementById('product-description').value || '').trim();
+  const photoFile = document.getElementById('product-photo').files[0];
+  const videoFile = document.getElementById('product-video').files[0];
 
-  const message =
-    document.getElementById("product-message");
+  const errEl = document.getElementById('product-error');
+  const msgEl = document.getElementById('product-message');
+  errEl.textContent = '';
+  msgEl.textContent = '';
 
-  const name =
-    document.getElementById("product-name").value.trim();
+  if (!name) { errEl.textContent = 'Product name is required.'; return; }
+  if (price === null || Number.isNaN(price) || price < 0) { errEl.textContent = 'Enter a valid price.'; return; }
+  if (!cat) { errEl.textContent = 'Select a category.'; return; }
+  if (!location) { errEl.textContent = 'Enter a location.'; return; }
 
-  const price =
-    document.getElementById("product-price").value.trim();
-
-  const category =
-    document.getElementById("product-category").value;
-
-  const location =
-    document.getElementById("product-location").value.trim();
-
-  const whatsapp =
-    document.getElementById("product-whatsapp").value.trim();
-
-  const description =
-    document.getElementById("product-description").value.trim();
-
-  const photo =
-    document.getElementById("product-photo").files[0];
-
-  const video =
-    document.getElementById("product-video").files[0];
-
-
-  /* =========================
-     BASIC VALIDATION
-     ========================= */
-
-  if (
-    !name ||
-    !price ||
-    !category ||
-    !location ||
-    !whatsapp ||
-    !description
-  ) {
-
-    message.textContent =
-      "Please complete all required product fields.";
-
+  // Validate video size/length loosely (size only - length requires decoding)
+  if (videoFile && videoFile.size > 25 * 1024 * 1024) {
+    errEl.textContent = 'Video file exceeds 25 MB limit.';
     return;
   }
 
-
-  if (Number(price) < 0) {
-
-    message.textContent =
-      "Product price cannot be negative.";
-
+  // Read files (if any) as Data URLs for the demo
+  let photoData = null;
+  let videoData = null;
+  try {
+  if (photoFile) photoData = await readFileAsDataUrl(photoFile);
+    if (videoFile) videoData = await readFileAsDataUrl(videoFile);
+  } catch (e) {
+    console.error('File read failed', e);
+    errEl.textContent = 'Failed to read uploaded files.';
     return;
   }
 
+  const sellerEmail = getCurrentSeller() || '';
 
-  /* =========================
-     CHECK PHOTO
-     ========================= */
+  const newProduct = {
+    id: genId(),
+    name,
+    price,
+    cat,
+    location,
+    whatsapp,
+    description,
+    photo: photoData,
+    video: videoData,
+    icon: '', // optional
+    sellerEmail,
+    createdAt: new Date().toISOString()
+  };
 
-  if (!photo) {
+  products.unshift(newProduct);
+  saveProducts(products);
 
-    message.textContent =
-      "Please select a product photo.";
+  msgEl.textContent = 'Product submitted (demo) and added to listings.';
+  render(products);
 
-    return;
-  }
-
-
-  if (!photo.type.startsWith("image/")) {
-
-    message.textContent =
-      "Please select a valid image file.";
-
-    return;
-  }
-
-
-  /* =========================
-     CHECK VIDEO SIZE
-     ========================= */
-
-  if (video) {
-
-    const maxVideoSize =
-      25 * 1024 * 1024;
-
-    if (video.size > maxVideoSize) {
-
-      message.textContent =
-        "Video must be 25 MB or smaller.";
-
-      return;
-    }
-
-  }
-
-
-  /* =========================
-     CHECK LOGIN
-     ========================= */
-
-  const {
-    data: {
-      session
-    }
-  } =
-    await supabase.auth.getSession();
-
-
-  if (!session) {
-
-    message.textContent =
-      "Please log in before adding a product.";
-
-    return;
-  }
-
-
-  /* =========================
-     CURRENT USER
-     ========================= */
-
-  const user =
-    session.user;
-
-
-  /* =========================
-     DEMO SUBMISSION
-     ========================= */
-
-  message.textContent =
-    "Product submitted for approval.";
-
-
-  /*
-    IMPORTANT:
-
-    At this stage the product is NOT
-    being saved to a Supabase database.
-
-    The seller account/login works through
-    Supabase Authentication.
-
-    To make products permanently appear
-    on the marketplace, we still need to
-    create:
-
-    1. Supabase products table
-    2. Supabase Storage for photos
-    3. Supabase Storage for videos
-    4. Product approval system
-    5. Database connection
-  */
-
-
-  console.log("Product submission:", {
-
-    seller_id: user.id,
-
-    name: name,
-
-    price: price,
-
-    category: category,
-
-    location: location,
-
-    whatsapp: whatsapp,
-
-    description: description,
-
-    photo: photo.name,
-
-    video: video
-      ? video.name
-      : null
-
-  });
-
-
-  /* =========================
-     CLEAR FORM
-     ========================= */
-
-  document.getElementById(
-    "product-name"
-  ).value = "";
-
-  document.getElementById(
-    "product-price"
-  ).value = "";
-
-  document.getElementById(
-    "product-category"
-  ).value = "";
-
-  document.getElementById(
-    "product-location"
-  ).value = "";
-
-  document.getElementById(
-    "product-whatsapp"
-  ).value = "";
-
-  document.getElementById(
-    "product-description"
-  ).value = "";
-
-  document.getElementById(
-    "product-photo"
-  ).value = "";
-
-  document.getElementById(
-    "product-video"
-  ).value = "";
-
+  // hide and clear
+  setTimeout(() => {
+    hideAddProduct();
+  }, 800);
 }
 
-
 /* =====================================================
-   SUPABASE AUTH STATE LISTENER
+   AUTH UI STATE
    ===================================================== */
+function updateAuthState() {
+  const current = getCurrentSeller();
+  const dashboard = document.getElementById('seller-dashboard');
+  const loginBox = document.getElementById('seller-login');
+  const registerBox = document.getElementById('seller-account');
+  const welcome = document.getElementById('seller-welcome');
 
-supabase.auth.onAuthStateChange(
-  async function(event, session) {
-
-    await checkSellerSession();
-
+  if (current) {
+    const sellers = loadSellers();
+    const s = sellers.find(x => x.email === current);
+    const displayName = s ? (s.business || s.name || s.email) : current;
+    welcome.textContent = `Welcome, ${displayName}!`;
+    dashboard.classList.remove('hidden');
+    loginBox.classList.add('hidden');
+    registerBox.classList.add('hidden');
+  } else {
+    dashboard.classList.add('hidden');
+    loginBox.classList.remove('hidden');
+    registerBox.classList.remove('hidden');
   }
-);
-
+}
 
 /* =====================================================
-   INITIAL PAGE LOAD
+   EVENT BINDING & INITIALIZATION
    ===================================================== */
+document.addEventListener('DOMContentLoaded', () => {
+  // initial render
+  products = loadProducts();
+  render(products);
 
-render();
+  // search
+  document.getElementById('search-btn').addEventListener('click', () => filterProducts());
+  document.getElementById('search').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') filterProducts();
+  });
 
-checkSellerSession();
+  // categories
+  document.querySelectorAll('.cat').forEach(el => {
+    el.addEventListener('click', (e) => {
+      const cat = el.dataset.cat || el.textContent || '';
+      document.getElementById('search').value = cat;
+      filterProducts(cat);
+      document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  // top Sell button: go to seller area
+  document.getElementById('sell-cta').addEventListener('click', () => {
+    document.getElementById('seller').scrollIntoView({ behavior: 'smooth' });
+  });
+
+  // auth actions
+  document.getElementById('create-seller-btn').addEventListener('click', registerSeller);
+  document.getElementById('login-btn').addEventListener('click', loginSeller);
+  document.getElementById('logout-btn').addEventListener('click', logoutSeller);
+
+  // product add actions
+  document.getElementById('add-product-btn').addEventListener('click', () => {
+    const current = getCurrentSeller();
+    if (!current) {
+      // if not logged in, prompt to login/register by scrolling to form
+      document.getElementById('seller').scrollIntoView({ behavior: 'smooth' });
+      document.getElementById('login-error').textContent = 'Please log in or create an account to add a product.';
+      return;
+    }
+    showAddProduct();
+    document.getElementById('add-product-form').scrollIntoView({ behavior: 'smooth' });
+  });
+  document.getElementById('cancel-product-btn').addEventListener('click', hideAddProduct);
+  document.getElementById('submit-product-btn').addEventListener('click', submitProduct);
+
+  // initial auth state
+  updateAuthState();
+});
 </script>
-
-      
 </body>
 </html>
