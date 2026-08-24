@@ -93,6 +93,18 @@ main { max-width: 1100px; margin: 28px auto; padding: 0 5%; }
   align-items: center;
   justify-content: center;
   font-size: 42px;
+  overflow: hidden;
+}
+.pic img {
+  max-height: 150px;
+  width: auto;
+  object-fit: cover;
+}
+.pic video {
+  max-height: 150px;
+  width: 100%;
+  object-fit: cover;
+  cursor: pointer;
 }
 .body { padding: 14px; flex: 1; display:flex; flex-direction:column; }
 .price { font-size: 19px; font-weight: 800; color: #0b7a53; margin-top: 6px; }
@@ -111,6 +123,31 @@ main { max-width: 1100px; margin: 28px auto; padding: 0 5%; }
   background: #98a2b3;
   pointer-events: none;
 }
+.card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+.card-actions button {
+  flex: 1;
+  padding: 8px 10px;
+  font-size: 12px;
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.delete-btn {
+  background: #b42318;
+  color: white;
+  font-weight: 600;
+}
+.delete-btn:hover { background: #8b1a13; }
+.video-btn {
+  background: #667085;
+  color: white;
+  font-weight: 600;
+}
+.video-btn:hover { background: #4d5564; }
 .form-box {
   background: white;
   padding: 20px;
@@ -169,6 +206,83 @@ textarea { min-height: 100px; resize: vertical; }
   padding: 20px;
   margin-top: 20px;
 }
+.seller-products-section {
+  margin-top: 30px;
+  border-top: 1px solid #e4e7ec;
+  padding-top: 20px;
+}
+.seller-products-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 15px;
+}
+.seller-product-card {
+  background: #f9fafb;
+  border: 1px solid #e4e7ec;
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+}
+.seller-product-name {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.seller-product-price {
+  color: #0b7a53;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.seller-product-meta {
+  font-size: 12px;
+  color: #667085;
+  margin-bottom: 10px;
+}
+.modal-backdrop {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+}
+.modal-backdrop.active {
+  display: flex;
+}
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  max-width: 90%;
+  max-height: 90vh;
+  overflow: auto;
+  padding: 20px;
+  position: relative;
+}
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #e4e7ec;
+  border: 0;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+}
+.modal-video {
+  width: 100%;
+  max-width: 600px;
+  border-radius: 10px;
+}
 #seller, #seller-dashboard { scroll-margin-top: 90px; }
 footer {
   margin-top: 50px;
@@ -186,9 +300,11 @@ footer {
   .logo { font-size: 20px; }
   .sell { padding: 9px 11px; }
   .search { width: 100%; }
+  .seller-products-grid { grid-template-columns: 1fr; }
 }
 .form-error { color: #b42318; font-weight:600; margin-top:8px;}
 .small { font-size:13px; color:#667085;}
+.loading { opacity: 0.6; pointer-events: none; }
 </style>
 </head>
 <body>
@@ -256,6 +372,12 @@ footer {
   <!-- ================= REGISTER ================= -->
   <div id="seller-account" class="form-box">
     <h3>Create a Seller Account</h3>
+    <label class="small">Email address</label>
+    <input id="seller-email" type="email" placeholder="Email address" />
+
+    <label class="small">Password (minimum 6 characters)</label>
+    <input id="seller-password" type="password" placeholder="Password (minimum 6 characters)" />
+
     <label class="small">Full name</label>
     <input id="seller-name" type="text" placeholder="Full name" aria-label="Full name" />
 
@@ -267,12 +389,6 @@ footer {
 
     <label class="small">Location</label>
     <input id="seller-location" type="text" placeholder="Location" />
-
-    <label class="small">Email address</label>
-    <input id="seller-email" type="email" placeholder="Email address" />
-
-    <label class="small">Password (minimum 6 characters)</label>
-    <input id="seller-password" type="password" placeholder="Password (minimum 6 characters)" />
 
     <button type="button" class="primary-btn" id="create-seller-btn">Create Seller Account</button>
     <p id="seller-message" class="message" aria-live="polite"></p>
@@ -305,6 +421,12 @@ footer {
     <p>Manage your LibOnlineMall account and products here.</p>
 
     <button class="primary-btn" id="add-product-btn">+ Add Product</button>
+
+    <!-- MY LISTINGS -->
+    <div class="seller-products-section hidden" id="my-listings-section">
+      <h3>My Listings</h3>
+      <div id="seller-products" class="seller-products-grid"></div>
+    </div>
 
     <!-- ADD PRODUCT -->
     <div id="add-product-form" class="form-box hidden" style="margin-top:20px;">
@@ -364,86 +486,33 @@ footer {
   Prototype — more features coming.
 </footer>
 
-<!-- ================= OPTIONAL SUPABASE SDK (kept as optional) ================= -->
-<!-- If you intend to use Supabase storage/auth replace the placeholders below and use `supabase` within the JS.
-     For this demo page, core flows use localStorage as a lightweight fallback. -->
+<!-- ================= VIDEO MODAL ================= -->
+<div class="modal-backdrop" id="video-modal">
+  <div class="modal-content">
+    <button class="modal-close" id="modal-close-btn">✕</button>
+    <video id="modal-video" class="modal-video" controls></video>
+  </div>
+</div>
+
+<!-- ================= SUPABASE SDK ================= -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 /* =====================================================
-   CLIENT-SIDE "BACKEND" (localStorage fallback demo)
+   SUPABASE INITIALIZATION
    ===================================================== */
+const SUPABASE_URL = 'https://gvzxefrmhvqmkehbrult.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_uelg3cyss3Odnl9nuqeZ6w_rryTkSJC';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-/*
-  Storage keys:
-  - lom_products
-  - lom_sellers
-  - lom_current_seller
-*/
+const PRODUCT_IMAGES_BUCKET = 'product-images';
+const PRODUCT_VIDEOS_BUCKET = 'product-videos';
 
-const STORAGE_PRODUCTS_KEY = 'lom_products';
-const STORAGE_SELLERS_KEY = 'lom_sellers';
-const STORAGE_CURRENT_SELLER = 'lom_current_seller';
-
-/* Demo starter products */
-const DEFAULT_PRODUCTS = [
-  { id: genId(), name: "iPhone 13", price: 450, location: "Monrovia", cat: "Electronics", icon: "📱", whatsapp: "", photo: "", sellerEmail: "" },
-  { id: genId(), name: "Nike Running Shoes", price: 35, location: "Paynesville", cat: "Fashion", icon: "👟", whatsapp: "", photo: "", sellerEmail: "" },
-  { id: genId(), name: "Office Chair", price: 65, location: "Sinkor", cat: "Home", icon: "🪑", whatsapp: "", photo: "", sellerEmail: "" },
-  { id: genId(), name: "Laptop Computer", price: 280, location: "Monrovia", cat: "Computers", icon: "💻", whatsapp: "", photo: "", sellerEmail: "" },
-  { id: genId(), name: "Football Boots", price: 40, location: "Congo Town", cat: "Sports", icon: "⚽", whatsapp: "", photo: "", sellerEmail: "" },
-  { id: genId(), name: "Toyota Corolla", price: 7500, location: "Paynesville", cat: "Vehicles", icon: "🚗", whatsapp: "", photo: "", sellerEmail: "" }
-];
-
-/* Utility functions */
-function genId() {
-  return 'p_' + Math.random().toString(36).slice(2, 10);
-}
-
-function loadProducts() {
-  try {
-    const raw = localStorage.getItem(STORAGE_PRODUCTS_KEY);
-    if (!raw) {
-      saveProducts(DEFAULT_PRODUCTS);
-      return DEFAULT_PRODUCTS.slice();
-    }
-    return JSON.parse(raw);
-  } catch (err) {
-    console.error('Failed to load products:', err);
-    return DEFAULT_PRODUCTS.slice();
-  }
-}
-
-function saveProducts(list) {
-  localStorage.setItem(STORAGE_PRODUCTS_KEY, JSON.stringify(list));
-}
-
-function loadSellers() {
-  try {
-    const raw = localStorage.getItem(STORAGE_SELLERS_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch (err) {
-    console.error('Failed to load sellers:', err);
-    return [];
-  }
-}
-
-function saveSellers(list) {
-  localStorage.setItem(STORAGE_SELLERS_KEY, JSON.stringify(list));
-}
-
-function setCurrentSeller(email) {
-  localStorage.setItem(STORAGE_CURRENT_SELLER, email);
-}
-function getCurrentSeller() {
-  return localStorage.getItem(STORAGE_CURRENT_SELLER);
-}
-function clearCurrentSeller() {
-  localStorage.removeItem(STORAGE_CURRENT_SELLER);
-}
+let currentUser = null;
+let products = [];
 
 /* =====================================================
-   ESCAPE HTML (XSS-safe insertion for text content)
+   UTILITY FUNCTIONS
    ===================================================== */
 function escapeHtml(value) {
   if (value === null || value === undefined) return "";
@@ -455,27 +524,18 @@ function escapeHtml(value) {
     .replace(/'/g, '&#039;');
 }
 
-/* =====================================================
-   WHATSAPP LINK CREATION
-   - Accept various local formats; convert leading 0 -> 231
-   - Return null if invalid/no number
-   ===================================================== */
 function whatsappUrlFromRaw(raw) {
   if (!raw) return null;
   const digits = String(raw).replace(/\D/g, '');
   if (!digits) return null;
   let num = digits;
   if (num.startsWith('0')) {
-    num = '231' + num.substring(1); // Liberia country code
+    num = '231' + num.substring(1);
   }
-  // Very small sanity check length
   if (num.length < 7) return null;
   return 'https://wa.me/' + num;
 }
 
-/* =====================================================
-   PRICE FORMATTING
-   ===================================================== */
 const usdFmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
 function formatPrice(value) {
   if (value === null || value === undefined || value === '') return '';
@@ -487,9 +547,48 @@ function formatPrice(value) {
 }
 
 /* =====================================================
-   RENDER PRODUCTS
+   PRODUCT RENDERING
    ===================================================== */
-let products = loadProducts();
+function renderProductCard(product, includeDelete = false) {
+  const photoHtml = product.image_url
+    ? `<div class="pic"><img src="${escapeHtml(product.image_url)}" alt="${escapeHtml(product.name)}" loading="lazy"></div>`
+    : `<div class="pic">🛍️</div>`;
+
+  const whatsappLink = whatsappUrlFromRaw(product.whatsapp);
+
+  let videoHtml = '';
+  if (product.video_url) {
+    videoHtml = `<button class="video-btn" onclick="openVideoModal('${escapeHtml(product.video_url)}')">▶ Watch Video</button>`;
+  }
+
+  let actionsHtml = '';
+  if (includeDelete) {
+    actionsHtml = `
+      <div class="card-actions">
+        ${videoHtml}
+        <button class="delete-btn" onclick="deleteProduct('${product.id}')">🗑 Delete</button>
+      </div>
+    `;
+  } else if (videoHtml) {
+    actionsHtml = `<div class="card-actions">${videoHtml}</div>`;
+  }
+
+  return `
+    <div class="card" aria-label="${escapeHtml(product.name)}">
+      ${photoHtml}
+      <div class="body">
+        <strong>${escapeHtml(product.name)}</strong>
+        <div class="price">${formatPrice(product.price)}</div>
+        <div class="meta">${escapeHtml(product.location)} · ${escapeHtml(product.category)}</div>
+        ${whatsappLink
+          ? `<a class="contact" href="${escapeHtml(whatsappLink)}" target="_blank" rel="noopener">💬 Contact Seller</a>`
+          : `<div class="contact disabled">Contact Seller</div>`
+        }
+        ${actionsHtml}
+      </div>
+    </div>
+  `;
+}
 
 function render(list = products) {
   const container = document.getElementById('products');
@@ -504,25 +603,38 @@ function render(list = products) {
     return;
   }
 
-  container.innerHTML = list.map(product => {
-    const photoHtml = product.photo
-      ? `<div class="pic"><img src="${escapeHtml(product.photo)}" alt="${escapeHtml(product.name)}" style="max-height:150px; width:auto; object-fit:cover;"></div>`
-      : `<div class="pic">${product.icon || '🛍️'}</div>`;
+  container.innerHTML = list.map(p => renderProductCard(p, false)).join('');
+}
 
-    const whatsappLink = whatsappUrlFromRaw(product.whatsapp);
+function renderSellerProducts(sellerProducts) {
+  const container = document.getElementById('seller-products');
+  const section = document.getElementById('my-listings-section');
+  
+  if (!sellerProducts || sellerProducts.length === 0) {
+    section.classList.add('hidden');
+    return;
+  }
+
+  section.classList.remove('hidden');
+  container.innerHTML = sellerProducts.map(p => {
+    const photoUrl = p.image_url;
+    const photoHtml = photoUrl
+      ? `<div style="width:100%; height:80px; background:#e9eef2; border-radius:6px; margin-bottom:8px; display:flex; align-items:center; justify-content:center; overflow:hidden;"><img src="${escapeHtml(photoUrl)}" alt="" style="max-height:80px; width:auto;"></div>`
+      : `<div style="width:100%; height:80px; background:#e9eef2; border-radius:6px; margin-bottom:8px; display:flex; align-items:center; justify-content:center; font-size:32px;">🛍️</div>`;
+
+    let videoBtn = '';
+    if (p.video_url) {
+      videoBtn = `<button class="video-btn" onclick="openVideoModal('${escapeHtml(p.video_url)}')" style="margin-bottom:8px;">▶ Watch Video</button>`;
+    }
 
     return `
-      <div class="card" aria-label="${escapeHtml(product.name)}">
+      <div class="seller-product-card">
         ${photoHtml}
-        <div class="body">
-          <strong>${escapeHtml(product.name)}</strong>
-          <div class="price">${formatPrice(product.price)}</div>
-          <div class="meta">${escapeHtml(product.location)} · ${escapeHtml(product.cat)}</div>
-          ${whatsappLink
-            ? `<a class="contact" href="${escapeHtml(whatsappLink)}" target="_blank" rel="noopener">💬 Contact Seller</a>`
-            : `<div class="contact disabled">Contact Seller</div>`
-          }
-        </div>
+        <div class="seller-product-name">${escapeHtml(p.name)}</div>
+        <div class="seller-product-price">${formatPrice(p.price)}</div>
+        <div class="seller-product-meta">${escapeHtml(p.category)} • ${escapeHtml(p.location)}</div>
+        ${videoBtn}
+        <button class="delete-btn" onclick="deleteProduct('${p.id}')" style="width:100%; margin-top:auto;">🗑 Delete Listing</button>
       </div>
     `;
   }).join('');
@@ -538,59 +650,180 @@ function filterProducts(query) {
     return;
   }
   const filtered = products.filter(product => {
-    const text = `${product.name} ${product.location} ${product.cat}`.toLowerCase();
+    const text = `${product.name} ${product.location} ${product.category}`.toLowerCase();
     return text.includes(q);
   });
   render(filtered);
 }
 
 /* =====================================================
-   SELLER AUTH (client-side demo)
-   - Uses SHA-256 password hashing via SubtleCrypto for storage
+   VIDEO MODAL
    ===================================================== */
-async function sha256Hex(text) {
-  const enc = new TextEncoder();
-  const data = enc.encode(String(text));
-  const hash = await crypto.subtle.digest('SHA-256', data);
-  const bytes = new Uint8Array(hash);
-  return Array.from(bytes).map(b => b.toString(16).padStart(2,'0')).join('');
+function openVideoModal(videoUrl) {
+  const modal = document.getElementById('video-modal');
+  const video = document.getElementById('modal-video');
+  video.src = videoUrl;
+  modal.classList.add('active');
 }
 
+document.getElementById('modal-close-btn').addEventListener('click', () => {
+  const modal = document.getElementById('video-modal');
+  const video = document.getElementById('modal-video');
+  video.pause();
+  video.src = '';
+  modal.classList.remove('active');
+});
+
+document.getElementById('video-modal').addEventListener('click', (e) => {
+  if (e.target.id === 'video-modal') {
+    const modal = document.getElementById('video-modal');
+    const video = document.getElementById('modal-video');
+    video.pause();
+    video.src = '';
+    modal.classList.remove('active');
+  }
+});
+
+/* =====================================================
+   LOAD PRODUCTS FROM SUPABASE
+   ===================================================== */
+async function loadProducts() {
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .eq('approval_status', 'approved');
+
+    if (error) {
+      console.error('Failed to load products:', error);
+      return;
+    }
+
+    products = data || [];
+    render(products);
+  } catch (err) {
+    console.error('Error loading products:', err);
+  }
+}
+
+async function loadSellerProducts() {
+  if (!currentUser) return;
+
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .eq('seller_id', currentUser.id);
+
+    if (error) {
+      console.error('Failed to load seller products:', error);
+      return;
+    }
+
+    renderSellerProducts(data || []);
+  } catch (err) {
+    console.error('Error loading seller products:', err);
+  }
+}
+
+/* =====================================================
+   DELETE PRODUCT
+   ===================================================== */
+async function deleteProduct(productId) {
+  if (!confirm('Are you sure you want to delete this listing?')) return;
+
+  try {
+    const product = (await supabase
+      .from('products')
+      .select('*')
+      .eq('id', productId)
+      .single()).data;
+
+    if (!product) {
+      alert('Product not found.');
+      return;
+    }
+
+    if (product.seller_id !== currentUser.id) {
+      alert('You can only delete your own listings.');
+      return;
+    }
+
+    // Delete image from storage
+    if (product.image_url) {
+      const imagePath = product.image_url.split('/').pop();
+      await supabase.storage.from(PRODUCT_IMAGES_BUCKET).remove([imagePath]);
+    }
+
+    // Delete video from storage
+    if (product.video_url) {
+      const videoPath = product.video_url.split('/').pop();
+      await supabase.storage.from(PRODUCT_VIDEOS_BUCKET).remove([videoPath]);
+    }
+
+    // Delete product from database
+    const { error } = await supabase
+      .from('products')
+      .delete()
+      .eq('id', productId);
+
+    if (error) {
+      console.error('Delete error:', error);
+      alert('Failed to delete listing.');
+      return;
+    }
+
+    alert('Listing deleted successfully.');
+    await loadSellerProducts();
+    await loadProducts();
+  } catch (err) {
+    console.error('Error deleting product:', err);
+    alert('An error occurred.');
+  }
+}
+
+/* =====================================================
+   AUTHENTICATION
+   ===================================================== */
 async function registerSeller() {
+  const email = (document.getElementById('seller-email').value || '').trim().toLowerCase();
+  const password = (document.getElementById('seller-password').value || '');
   const name = (document.getElementById('seller-name').value || '').trim();
   const business = (document.getElementById('seller-business').value || '').trim();
   const phone = (document.getElementById('seller-phone').value || '').trim();
   const location = (document.getElementById('seller-location').value || '').trim();
-  const email = (document.getElementById('seller-email').value || '').trim().toLowerCase();
-  const password = (document.getElementById('seller-password').value || '');
 
   const errorEl = document.getElementById('seller-error');
   const msgEl = document.getElementById('seller-message');
   errorEl.textContent = '';
   msgEl.textContent = '';
 
-  if (!name) { errorEl.textContent = 'Please enter your full name.'; return; }
   if (!email || !/^\S+@\S+\.\S+$/.test(email)) { errorEl.textContent = 'Enter a valid email.'; return; }
   if (!password || password.length < 6) { errorEl.textContent = 'Password must be at least 6 characters.'; return; }
+  if (!name) { errorEl.textContent = 'Please enter your full name.'; return; }
 
-  const sellers = loadSellers();
-  if (sellers.some(s => s.email === email)) {
-    errorEl.textContent = 'An account with that email already exists.';
-    return;
+  try {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { full_name: name, business_name: business, phone, location }
+      }
+    });
+
+    if (error) {
+      errorEl.textContent = error.message || 'Sign up failed.';
+      return;
+    }
+
+    msgEl.textContent = 'Account created. Please verify your email. You are now logged in.';
+    currentUser = data.user;
+    updateAuthState();
+    document.getElementById('seller-password').value = '';
+  } catch (err) {
+    console.error('Registration error:', err);
+    errorEl.textContent = 'An error occurred.';
   }
-
-  const pwHash = await sha256Hex(password);
-  const seller = {
-    name, business, phone, location, email, passwordHash: pwHash, createdAt: new Date().toISOString()
-  };
-  sellers.push(seller);
-  saveSellers(sellers);
-
-  msgEl.textContent = 'Account created. You are now logged in.';
-  setCurrentSeller(email);
-  updateAuthState();
-  // clear sensitive fields
-  document.getElementById('seller-password').value = '';
 }
 
 async function loginSeller() {
@@ -604,26 +837,47 @@ async function loginSeller() {
 
   if (!email || !password) { errorEl.textContent = 'Enter email and password.'; return; }
 
-  const sellers = loadSellers();
-  const seller = sellers.find(s => s.email === email);
-  if (!seller) { errorEl.textContent = 'No account found for that email.'; return; }
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
 
-  const pwHash = await sha256Hex(password);
-  if (pwHash !== seller.passwordHash) {
-    errorEl.textContent = 'Invalid email or password.';
-    return;
+    if (error) {
+      errorEl.textContent = error.message || 'Login failed.';
+      return;
+    }
+
+    msgEl.textContent = 'Logged in.';
+    currentUser = data.user;
+    document.getElementById('login-password').value = '';
+    updateAuthState();
+  } catch (err) {
+    console.error('Login error:', err);
+    errorEl.textContent = 'An error occurred.';
   }
-
-  setCurrentSeller(email);
-  msgEl.textContent = 'Logged in.';
-  document.getElementById('login-password').value = '';
-  updateAuthState();
 }
 
-function logoutSeller() {
-  clearCurrentSeller();
-  updateAuthState();
-  document.getElementById('seller-message').textContent = '';
+async function logoutSeller() {
+  try {
+    await supabase.auth.signOut();
+    currentUser = null;
+    updateAuthState();
+  } catch (err) {
+    console.error('Logout error:', err);
+  }
+}
+
+async function checkCurrentUser() {
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session && session.user) {
+      currentUser = session.user;
+      updateAuthState();
+    }
+  } catch (err) {
+    console.error('Session check error:', err);
+  }
 }
 
 /* =====================================================
@@ -637,7 +891,6 @@ function showAddProduct() {
 
 function hideAddProduct() {
   document.getElementById('add-product-form').classList.add('hidden');
-  // clear fields
   ['product-name','product-price','product-category','product-location','product-whatsapp','product-description'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
@@ -650,13 +903,10 @@ function hideAddProduct() {
   document.getElementById('product-message').textContent = '';
 }
 
-function readFileAsDataUrl(file) {
+function readFileAsBlob(file) {
   return new Promise((resolve, reject) => {
     if (!file) return resolve(null);
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
+    resolve(file);
   });
 }
 
@@ -664,7 +914,7 @@ async function submitProduct() {
   const name = (document.getElementById('product-name').value || '').trim();
   const priceRaw = document.getElementById('product-price').value;
   const price = priceRaw === '' ? null : parseFloat(priceRaw);
-  const cat = (document.getElementById('product-category').value || '').trim();
+  const category = (document.getElementById('product-category').value || '').trim();
   const location = (document.getElementById('product-location').value || '').trim();
   const whatsapp = (document.getElementById('product-whatsapp').value || '').trim();
   const description = (document.getElementById('product-description').value || '').trim();
@@ -678,74 +928,115 @@ async function submitProduct() {
 
   if (!name) { errEl.textContent = 'Product name is required.'; return; }
   if (price === null || Number.isNaN(price) || price < 0) { errEl.textContent = 'Enter a valid price.'; return; }
-  if (!cat) { errEl.textContent = 'Select a category.'; return; }
+  if (!category) { errEl.textContent = 'Select a category.'; return; }
   if (!location) { errEl.textContent = 'Enter a location.'; return; }
 
-  // Validate video size/length loosely (size only - length requires decoding)
   if (videoFile && videoFile.size > 25 * 1024 * 1024) {
     errEl.textContent = 'Video file exceeds 25 MB limit.';
     return;
   }
 
-  // Read files (if any) as Data URLs for the demo
-  let photoData = null;
-  let videoData = null;
+  document.getElementById('submit-product-btn').disabled = true;
+  msgEl.textContent = 'Uploading...';
+
   try {
-  if (photoFile) photoData = await readFileAsDataUrl(photoFile);
-    if (videoFile) videoData = await readFileAsDataUrl(videoFile);
-  } catch (e) {
-    console.error('File read failed', e);
-    errEl.textContent = 'Failed to read uploaded files.';
-    return;
+    let imageUrl = null;
+    let videoUrl = null;
+
+    // Upload image
+    if (photoFile) {
+      const imageFileName = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}_${photoFile.name}`;
+      const { data: imgData, error: imgError } = await supabase.storage
+        .from(PRODUCT_IMAGES_BUCKET)
+        .upload(imageFileName, photoFile);
+
+      if (imgError) {
+        errEl.textContent = 'Failed to upload image.';
+        document.getElementById('submit-product-btn').disabled = false;
+        return;
+      }
+
+      const { data: urlData } = supabase.storage
+        .from(PRODUCT_IMAGES_BUCKET)
+        .getPublicUrl(imageFileName);
+      imageUrl = urlData.publicUrl;
+    }
+
+    // Upload video
+    if (videoFile) {
+      const videoFileName = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}_${videoFile.name}`;
+      const { data: vidData, error: vidError } = await supabase.storage
+        .from(PRODUCT_VIDEOS_BUCKET)
+        .upload(videoFileName, videoFile);
+
+      if (vidError) {
+        errEl.textContent = 'Failed to upload video.';
+        document.getElementById('submit-product-btn').disabled = false;
+        return;
+      }
+
+      const { data: urlData } = supabase.storage
+        .from(PRODUCT_VIDEOS_BUCKET)
+        .getPublicUrl(videoFileName);
+      videoUrl = urlData.publicUrl;
+    }
+
+    // Insert into database
+    const { data: newProduct, error: dbError } = await supabase
+      .from('products')
+      .insert({
+        seller_id: currentUser.id,
+        name,
+        price,
+        category,
+        location,
+        whatsapp,
+        description,
+        image_url: imageUrl,
+        video_url: videoUrl,
+        approval_status: 'approved'
+      })
+      .select()
+      .single();
+
+    if (dbError) {
+      console.error('DB error:', dbError);
+      errEl.textContent = 'Failed to save product.';
+      document.getElementById('submit-product-btn').disabled = false;
+      return;
+    }
+
+    msgEl.textContent = 'Product added successfully!';
+    await loadProducts();
+    await loadSellerProducts();
+
+    setTimeout(() => {
+      hideAddProduct();
+      document.getElementById('submit-product-btn').disabled = false;
+    }, 800);
+  } catch (err) {
+    console.error('Submit error:', err);
+    errEl.textContent = 'An error occurred.';
+    document.getElementById('submit-product-btn').disabled = false;
   }
-
-  const sellerEmail = getCurrentSeller() || '';
-
-  const newProduct = {
-    id: genId(),
-    name,
-    price,
-    cat,
-    location,
-    whatsapp,
-    description,
-    photo: photoData,
-    video: videoData,
-    icon: '', // optional
-    sellerEmail,
-    createdAt: new Date().toISOString()
-  };
-
-  products.unshift(newProduct);
-  saveProducts(products);
-
-  msgEl.textContent = 'Product submitted (demo) and added to listings.';
-  render(products);
-
-  // hide and clear
-  setTimeout(() => {
-    hideAddProduct();
-  }, 800);
 }
 
 /* =====================================================
    AUTH UI STATE
    ===================================================== */
 function updateAuthState() {
-  const current = getCurrentSeller();
   const dashboard = document.getElementById('seller-dashboard');
   const loginBox = document.getElementById('seller-login');
   const registerBox = document.getElementById('seller-account');
   const welcome = document.getElementById('seller-welcome');
 
-  if (current) {
-    const sellers = loadSellers();
-    const s = sellers.find(x => x.email === current);
-    const displayName = s ? (s.business || s.name || s.email) : current;
+  if (currentUser) {
+    const displayName = currentUser.user_metadata?.business_name || currentUser.user_metadata?.full_name || currentUser.email;
     welcome.textContent = `Welcome, ${displayName}!`;
     dashboard.classList.remove('hidden');
     loginBox.classList.add('hidden');
     registerBox.classList.add('hidden');
+    loadSellerProducts();
   } else {
     dashboard.classList.add('hidden');
     loginBox.classList.remove('hidden');
@@ -757,17 +1048,17 @@ function updateAuthState() {
    EVENT BINDING & INITIALIZATION
    ===================================================== */
 document.addEventListener('DOMContentLoaded', () => {
-  // initial render
-  products = loadProducts();
-  render(products);
+  // Load products on page load
+  loadProducts();
+  checkCurrentUser();
 
-  // search
+  // Search
   document.getElementById('search-btn').addEventListener('click', () => filterProducts());
   document.getElementById('search').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') filterProducts();
   });
 
-  // categories
+  // Categories
   document.querySelectorAll('.cat').forEach(el => {
     el.addEventListener('click', (e) => {
       const cat = el.dataset.cat || el.textContent || '';
@@ -777,21 +1068,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // top Sell button: go to seller area
+  // Top Sell button
   document.getElementById('sell-cta').addEventListener('click', () => {
     document.getElementById('seller').scrollIntoView({ behavior: 'smooth' });
   });
 
-  // auth actions
+  // Auth actions
   document.getElementById('create-seller-btn').addEventListener('click', registerSeller);
   document.getElementById('login-btn').addEventListener('click', loginSeller);
   document.getElementById('logout-btn').addEventListener('click', logoutSeller);
 
-  // product add actions
+  // Product add actions
   document.getElementById('add-product-btn').addEventListener('click', () => {
-    const current = getCurrentSeller();
-    if (!current) {
-      // if not logged in, prompt to login/register by scrolling to form
+    if (!currentUser) {
       document.getElementById('seller').scrollIntoView({ behavior: 'smooth' });
       document.getElementById('login-error').textContent = 'Please log in or create an account to add a product.';
       return;
@@ -801,9 +1090,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   document.getElementById('cancel-product-btn').addEventListener('click', hideAddProduct);
   document.getElementById('submit-product-btn').addEventListener('click', submitProduct);
-
-  // initial auth state
-  updateAuthState();
 });
 </script>
 </body>
