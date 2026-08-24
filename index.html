@@ -734,13 +734,17 @@ const SUPABASE_PUBLISHABLE_KEY =
   "sb_publishable_uelg3cyss3Odnl9nuqeZ6w_rryTkSJC";
 
 
+if (typeof window.supabase === "undefined") {
+  alert("SUPABASE LIBRARY DID NOT LOAD");
+} else {
+  alert("SUPABASE LIBRARY LOADED");
+}
+
 const supabase =
   window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_PUBLISHABLE_KEY
   );
-
-alert("Supabase JavaScript loaded!");
 /* =====================================================
    DEMO PRODUCTS
    ===================================================== */
