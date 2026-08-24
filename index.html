@@ -627,7 +627,7 @@ function renderSellerProducts(sellerProducts) {
   container.innerHTML = sellerProducts.map(p => {
     const photoUrl = p.image_url;
     const photoHtml = photoUrl
-      ? `<div style="width:100%; height:80px; background:#e9eef2; border-radius:6px; margin-bottom:8px; display:flex; align-items:center; justify-content:center; overflow:hidden;"><img src="${escapeHtml(photoUrl)}" alt="${escapeHtml(p.name)}" style="max-height:80px; width:auto; object-fit:cover;"></div>`
+      ? `<div style="width:100%; height:80px; background:#e9eef2; border-radius:6px; margin-bottom:8px; display:flex; align-items:center; justify-content:center; overflow:hidden;"><img src="${escapeHtml(photoUrl)}" alt="${escapeHtml(p.name)}" style="max-height:80px; width:100%; object-fit:cover;"></div>`
       : `<div style="width:100%; height:80px; background:#e9eef2; border-radius:6px; margin-bottom:8px; display:flex; align-items:center; justify-content:center; font-size:32px;">🛍️</div>`;
 
     let videoBtn = '';
@@ -1012,40 +1012,37 @@ async function submitProduct() {
         return;
       }
 
-      const { data: urlData } = supabase.storage
+      const { data: vidUrlData } = supabase.storage
         .from(PRODUCT_VIDEOS_BUCKET)
         .getPublicUrl(videoFileName);
-      videoUrl = urlData.publicUrl;
+      videoUrl = vidUrlData.publicUrl;
     }
 
-    // Insert into database
-    const { data: newProduct, error: dbError } = await supabase
-      .from('products')
-      .insert({
-        seller_id: currentUser.id,
-        name,
-        price,
-        category,
-        location,
-        whatsapp,
-        description,
-        image_url: imageUrl,
-        video_url: videoUrl,
-        approval_status: 'approved'
-      })
-      .select()
-      .single();
+    // Create product record
+    const { data, error } = await supabase.from('products').insert([{
+      name,
+      price,
+      category,
+      location,
+      whatsapp,
+      description,
+      image_url: imageUrl,
+      video_url: videoUrl,
+      seller_id: currentUser.id,
+      approval_status: 'pending'
+    }]);
 
-    if (dbError) {
-      errEl.textContent = 'Failed to add product.';
+    if (error) {
+      errEl.textContent = 'Failed to submit product.';
       document.getElementById('submit-product-btn').disabled = false;
+      console.error('Submit error:', error);
       return;
     }
 
-    msgEl.textContent = 'Product added successfully!';
-    await loadSellerProducts();
-    await loadProducts();
+    msgEl.textContent = 'Product submitted for approval!';
     hideAddProduct();
+    await loadSellerProducts();
+    document.getElementById('submit-product-btn').disabled = false;
   } catch (err) {
     console.error('Error submitting product:', err);
     errEl.textContent = 'An error occurred.';
@@ -1054,53 +1051,38 @@ async function submitProduct() {
 }
 
 /* =====================================================
-   EVENT LISTENERS
+   EVENT LISTENERS & INITIALIZATION
    ===================================================== */
 document.addEventListener('DOMContentLoaded', () => {
-  // Sell CTA button - scroll to seller section
-  document.getElementById('sell-cta').addEventListener('click', () => {
-    if (currentUser) {
-      document.getElementById('seller-dashboard').scrollIntoView({ behavior: 'smooth' });
-    } else {
-      document.getElementById('seller').scrollIntoView({ behavior: 'smooth' });
-    }
-  });
-
-  // Search functionality
-  document.getElementById('search-btn').addEventListener('click', () => {
-    selectedCategory = null;
-    document.querySelectorAll('.cat').forEach(c => c.classList.remove('active'));
-    filterProducts();
-  });
-
-  document.getElementById('search').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-      selectedCategory = null;
-      document.querySelectorAll('.cat').forEach(c => c.classList.remove('active'));
-      filterProducts();
-    }
-  });
-
-  // Category filters
-  document.querySelectorAll('.cat').forEach(cat => {
-    cat.addEventListener('click', () => {
-      document.querySelectorAll('.cat').forEach(c => c.classList.remove('active'));
-      cat.classList.add('active');
-      selectedCategory = cat.dataset.cat;
-      document.getElementById('search').value = '';
-      filterProducts();
-    });
-  });
-
-  // Auth buttons
+  // Authentication buttons
   document.getElementById('create-seller-btn').addEventListener('click', registerSeller);
   document.getElementById('login-btn').addEventListener('click', loginSeller);
   document.getElementById('logout-btn').addEventListener('click', logoutSeller);
 
-  // Product management
+  // Seller dashboard buttons
+  document.getElementById('sell-cta').addEventListener('click', () => {
+    document.getElementById('seller').scrollIntoView({ behavior: 'smooth' });
+  });
+
   document.getElementById('add-product-btn').addEventListener('click', showAddProduct);
   document.getElementById('cancel-product-btn').addEventListener('click', hideAddProduct);
   document.getElementById('submit-product-btn').addEventListener('click', submitProduct);
+
+  // Search
+  document.getElementById('search-btn').addEventListener('click', () => filterProducts());
+  document.getElementById('search').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') filterProducts();
+  });
+
+  // Categories
+  document.querySelectorAll('.cat').forEach(cat => {
+    cat.addEventListener('click', (e) => {
+      document.querySelectorAll('.cat').forEach(c => c.classList.remove('active'));
+      e.target.closest('.cat').classList.add('active');
+      selectedCategory = e.target.closest('.cat').getAttribute('data-cat');
+      filterProducts();
+    });
+  });
 
   // Initialize
   checkCurrentUser();
