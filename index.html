@@ -494,9 +494,9 @@ footer {
 </footer>
 
 <!-- ================= VIDEO MODAL ================= -->
-<div class="modal-backdrop" id="video-modal">
-  <div class="modal-content">
-    <button class="modal-close" id="modal-close-btn">✕</button>
+<div class="modal-backdrop" id="video-modal" aria-hidden="true">
+  <div class="modal-content" role="dialog" aria-modal="true">
+    <button class="modal-close" id="modal-close-btn" aria-label="Close">✕</button>
     <video id="modal-video" class="modal-video" controls></video>
   </div>
 </div>
@@ -510,7 +510,9 @@ footer {
    ===================================================== */
 const SUPABASE_URL = 'https://gvzxefrmhvqmkehbrult.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_uelg3cyss3Odnl9nuqeZ6w_rryTkSJC';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// The CDN exposes a global `supabase` object with createClient() — avoid shadowing it.
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const PRODUCT_IMAGES_BUCKET = 'product-images';
 const PRODUCT_VIDEOS_BUCKET = 'product-videos';
@@ -520,7 +522,7 @@ let products = [];
 let selectedCategory = null;
 
 /* =====================================================
-   UTILITY FUNCTIONS
+   UTILITIES
    ===================================================== */
 function escapeHtml(value) {
   if (value === null || value === undefined) return "";
@@ -537,6 +539,7 @@ function whatsappUrlFromRaw(raw) {
   const digits = String(raw).replace(/\D/g, '');
   if (!digits) return null;
   let num = digits;
+  // If user enters a local Liberian format starting with 0, convert to +231
   if (num.startsWith('0')) {
     num = '231' + num.substring(1);
   }
@@ -555,7 +558,7 @@ function formatPrice(value) {
 }
 
 /* =====================================================
-   PRODUCT RENDERING
+   RENDERING
    ===================================================== */
 function renderProductCard(product, includeDelete = false) {
   const photoHtml = product.image_url
@@ -566,7 +569,9 @@ function renderProductCard(product, includeDelete = false) {
 
   let videoHtml = '';
   if (product.video_url) {
-    videoHtml = `<button class="video-btn" onclick="openVideoModal('${escapeHtml(product.video_url)}')">▶ Watch Video</button>`;
+    // Use encodeURI to avoid breaking the onclick if the URL contains characters
+    const safeUrl = encodeURI(product.video_url);
+    videoHtml = `<button class="video-btn" onclick="openVideoModal('${safeUrl}')">▶ Watch Video</button>`;
   }
 
   let actionsHtml = '';
@@ -574,12 +579,16 @@ function renderProductCard(product, includeDelete = false) {
     actionsHtml = `
       <div class="card-actions">
         ${videoHtml}
-        <button class="delete-btn" onclick="deleteProduct('${product.id}')">🗑 Delete</button>
+        <button class="delete-btn" onclick="deleteProduct('${escapeHtml(product.id)}')">🗑 Delete</button>
       </div>
     `;
   } else if (videoHtml) {
     actionsHtml = `<div class="card-actions">${videoHtml}</div>`;
   }
+
+  const contactHtml = whatsappLink
+    ? `<a class="contact" href="${escapeHtml(whatsappLink)}" target="_blank" rel="noopener noreferrer">💬 Contact Seller</a>`
+    : `<div class="contact disabled">Contact Seller</div>`;
 
   return `
     <div class="card" aria-label="${escapeHtml(product.name)}">
@@ -588,10 +597,7 @@ function renderProductCard(product, includeDelete = false) {
         <strong>${escapeHtml(product.name)}</strong>
         <div class="price">${formatPrice(product.price)}</div>
         <div class="meta">${escapeHtml(product.location)} · ${escapeHtml(product.category)}</div>
-        ${whatsappLink
-          ? `<a class="contact" href="${escapeHtml(whatsappLink)}" target="_blank" rel="noopener">💬 Contact Seller</a>`
-          : `<div class="contact disabled">Contact Seller</div>`
-        }
+        ${contactHtml}
         ${actionsHtml}
       </div>
     </div>
@@ -603,7 +609,7 @@ function render(list = products) {
   if (!container) return;
   if (!list || list.length === 0) {
     container.innerHTML = `
-      <div class="form-box">
+      <div class="form-box" role="status" aria-live="polite">
         <strong>No products found.</strong>
         <p>Try another search, or add a product.</p>
       </div>
@@ -617,9 +623,10 @@ function render(list = products) {
 function renderSellerProducts(sellerProducts) {
   const container = document.getElementById('seller-products');
   const section = document.getElementById('my-listings-section');
-  
+
   if (!sellerProducts || sellerProducts.length === 0) {
     section.classList.add('hidden');
+    container.innerHTML = '';
     return;
   }
 
@@ -627,22 +634,23 @@ function renderSellerProducts(sellerProducts) {
   container.innerHTML = sellerProducts.map(p => {
     const photoUrl = p.image_url;
     const photoHtml = photoUrl
-      ? `<div style="width:100%; height:80px; background:#e9eef2; border-radius:6px; margin-bottom:8px; display:flex; align-items:center; justify-content:center; overflow:hidden;"><img src="${escapeHtml(photoUrl)}" alt="${escapeHtml(p.name)}" style="max-height:80px; width:100%; object-fit:cover;"></div>`
+      ? `<div style="width:100%; height:80px; background:#e9eef2; border-radius:6px; margin-bottom:8px; display:flex; align-items:center; justify-content:center; overflow:hidden;"><img src="${escapeHtml(photoUrl)}" alt="${escapeHtml(p.name)}" style="width:100%; height:100%; object-fit:cover;"></div>`
       : `<div style="width:100%; height:80px; background:#e9eef2; border-radius:6px; margin-bottom:8px; display:flex; align-items:center; justify-content:center; font-size:32px;">🛍️</div>`;
 
     let videoBtn = '';
     if (p.video_url) {
-      videoBtn = `<button class="video-btn" onclick="openVideoModal('${escapeHtml(p.video_url)}')" style="margin-bottom:8px;">▶ Watch Video</button>`;
+      const safeUrl = encodeURI(p.video_url);
+      videoBtn = `<button class="video-btn" onclick="openVideoModal('${safeUrl}')" style="margin-bottom:8px;">▶ Watch Video</button>`;
     }
 
     return `
-      <div class="seller-product-card">
+      <div class="seller-product-card" aria-label="${escapeHtml(p.name)}">
         ${photoHtml}
         <div class="seller-product-name">${escapeHtml(p.name)}</div>
         <div class="seller-product-price">${formatPrice(p.price)}</div>
         <div class="seller-product-meta">${escapeHtml(p.category)} • ${escapeHtml(p.location)}</div>
         ${videoBtn}
-        <button class="delete-btn" onclick="deleteProduct('${p.id}')" style="width:100%; margin-top:auto;">🗑 Delete Listing</button>
+        <button class="delete-btn" onclick="deleteProduct('${escapeHtml(p.id)}')" style="width:100%; margin-top:auto;">🗑 Delete Listing</button>
       </div>
     `;
   }).join('');
@@ -658,18 +666,18 @@ function updateAuthState() {
   const welcome = document.getElementById('seller-welcome');
 
   if (currentUser) {
-    accountForm.classList.add('hidden');
-    loginForm.classList.add('hidden');
-    dashboard.classList.remove('hidden');
+    if (accountForm) accountForm.classList.add('hidden');
+    if (loginForm) loginForm.classList.add('hidden');
+    if (dashboard) dashboard.classList.remove('hidden';
     if (welcome) {
-      const userName = currentUser.user_metadata?.full_name || 'Seller';
+      const userName = (currentUser.user_metadata && currentUser.user_metadata.full_name) || currentUser.email || 'Seller';
       welcome.textContent = `Welcome, ${escapeHtml(userName)}!`;
     }
     loadSellerProducts();
   } else {
-    accountForm.classList.remove('hidden');
-    loginForm.classList.remove('hidden');
-    dashboard.classList.add('hidden');
+    if (accountForm) accountForm.classList.remove('hidden');
+    if (loginForm) loginForm.classList.remove('hidden');
+    if (dashboard) dashboard.classList.add('hidden');
     hideAddProduct();
   }
 }
@@ -679,17 +687,17 @@ function updateAuthState() {
    ===================================================== */
 function filterProducts(query) {
   const q = (query ?? document.getElementById('search').value ?? '').toLowerCase().trim();
-  let filtered = products;
+  let filtered = products.slice();
 
   if (q) {
     filtered = filtered.filter(product => {
-      const text = `${product.name} ${product.location} ${product.category}`.toLowerCase();
+      const text = `${product.name || ''} ${product.location || ''} ${product.category || ''}`.toLowerCase();
       return text.includes(q);
     });
   }
 
   if (selectedCategory) {
-    filtered = filtered.filter(product => product.category === selectedCategory);
+    filtered = filtered.filter(product => (product.category || '') === selectedCategory);
   }
 
   render(filtered);
@@ -701,25 +709,31 @@ function filterProducts(query) {
 function openVideoModal(videoUrl) {
   const modal = document.getElementById('video-modal');
   const video = document.getElementById('modal-video');
+  if (!modal || !video) return;
   video.src = videoUrl;
   modal.classList.add('active');
+  modal.setAttribute('aria-hidden', 'false');
 }
 
 document.getElementById('modal-close-btn').addEventListener('click', () => {
   const modal = document.getElementById('video-modal');
   const video = document.getElementById('modal-video');
+  if (!modal || !video) return;
   video.pause();
   video.src = '';
   modal.classList.remove('active');
+  modal.setAttribute('aria-hidden', 'true');
 });
 
 document.getElementById('video-modal').addEventListener('click', (e) => {
-  if (e.target.id === 'video-modal') {
+  if (e.target && e.target.id === 'video-modal') {
     const modal = document.getElementById('video-modal');
     const video = document.getElementById('modal-video');
+    if (!modal || !video) return;
     video.pause();
     video.src = '';
     modal.classList.remove('active');
+    modal.setAttribute('aria-hidden', 'true');
   }
 });
 
@@ -728,7 +742,7 @@ document.getElementById('video-modal').addEventListener('click', (e) => {
    ===================================================== */
 async function loadProducts() {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('products')
       .select('*')
       .eq('approval_status', 'approved');
@@ -749,7 +763,7 @@ async function loadSellerProducts() {
   if (!currentUser) return;
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('products')
       .select('*')
       .eq('seller_id', currentUser.id);
@@ -769,10 +783,13 @@ async function loadSellerProducts() {
    DELETE PRODUCT
    ===================================================== */
 async function deleteProduct(productId) {
+  if (!productId) return;
   if (!confirm('Are you sure you want to delete this listing?')) return;
 
+  if (!currentUser) { alert('Please log in to delete listings.'); return; }
+
   try {
-    const { data: product, error: fetchError } = await supabase
+    const { data: product, error: fetchError } = await supabaseClient
       .from('products')
       .select('*')
       .eq('id', productId)
@@ -790,18 +807,20 @@ async function deleteProduct(productId) {
 
     // Delete image from storage
     if (product.image_url) {
-      const imagePath = product.image_url.split('/').pop();
-      await supabase.storage.from(PRODUCT_IMAGES_BUCKET).remove([imagePath]);
+      const parts = product.image_url.split('/');
+      const imagePath = parts[parts.length - 1].split('?')[0];
+      await supabaseClient.storage.from(PRODUCT_IMAGES_BUCKET).remove([imagePath]).catch(() => {});
     }
 
     // Delete video from storage
     if (product.video_url) {
-      const videoPath = product.video_url.split('/').pop();
-      await supabase.storage.from(PRODUCT_VIDEOS_BUCKET).remove([videoPath]);
+      const parts = product.video_url.split('/');
+      const videoPath = parts[parts.length - 1].split('?')[0];
+      await supabaseClient.storage.from(PRODUCT_VIDEOS_BUCKET).remove([videoPath]).catch(() => {});
     }
 
     // Delete product from database
-    const { error } = await supabase
+    const { error } = await supabaseClient
       .from('products')
       .delete()
       .eq('id', productId);
@@ -834,36 +853,34 @@ async function registerSeller() {
 
   const errorEl = document.getElementById('seller-error');
   const msgEl = document.getElementById('seller-message');
-  errorEl.textContent = '';
-  msgEl.textContent = '';
+  if (errorEl) errorEl.textContent = '';
+  if (msgEl) msgEl.textContent = '';
 
-  if (!email || !/^\S+@\S+\.\S+$/.test(email)) { errorEl.textContent = 'Enter a valid email.'; return; }
-  if (!password || password.length < 6) { errorEl.textContent = 'Password must be at least 6 characters.'; return; }
-  if (!name) { errorEl.textContent = 'Please enter your full name.'; return; }
+  if (!email || !/^\S+@\S+\.\S+$/.test(email)) { if (errorEl) errorEl.textContent = 'Enter a valid email.'; return; }
+  if (!password || password.length < 6) { if (errorEl) errorEl.textContent = 'Password must be at least 6 characters.'; return; }
+  if (!name) { if (errorEl) errorEl.textContent = 'Please enter your full name.'; return; }
 
   try {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { full_name: name, business_name: business, phone, location }
-      }
-    });
+    // Supabase v2: pass metadata as the second argument
+    const { data, error } = await supabaseClient.auth.signUp(
+      { email, password },
+      { data: { full_name: name, business_name: business, phone, location } }
+      );
 
     if (error) {
-      errorEl.textContent = error.message || 'Sign up failed.';
+      if (errorEl) errorEl.textContent = error.message || 'Sign up failed.';
       return;
     }
 
-    msgEl.textContent = 'Account created. Please verify your email. You are now logged in.';
-    currentUser = data.user;
+    if (msgEl) msgEl.textContent = 'Account created. Please verify your email if required. You are now logged in.';
+    currentUser = data?.user || null;
     updateAuthState();
-    document.getElementById('seller-password').value = '';
-    document.getElementById('seller-email').value = '';
-    document.getElementById('seller-name').value = '';
+    // clear sensitive fields
+    const pwdEl = document.getElementById('seller-password');
+    if (pwdEl) pwdEl.value = '';
   } catch (err) {
     console.error('Registration error:', err);
-    errorEl.textContent = 'An error occurred.';
+    if (errorEl) errorEl.textContent = 'An error occurred.';
   }
 }
 
@@ -873,40 +890,43 @@ async function loginSeller() {
 
   const errorEl = document.getElementById('login-error');
   const msgEl = document.getElementById('login-message');
-  errorEl.textContent = '';
-  msgEl.textContent = '';
+  if (errorEl) errorEl.textContent = '';
+  if (msgEl) msgEl.textContent = '';
 
-  if (!email || !password) { errorEl.textContent = 'Enter email and password.'; return; }
+  if (!email || !password) { if (errorEl) errorEl.textContent = 'Enter email and password.'; return; }
 
   try {
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
       email,
       password
     });
 
     if (error) {
-      errorEl.textContent = error.message || 'Login failed.';
+      if (errorEl) errorEl.textContent = error.message || 'Login failed.';
       return;
     }
 
-    msgEl.textContent = 'Logged in.';
-    currentUser = data.user;
-    document.getElementById('login-password').value = '';
-    document.getElementById('login-email').value = '';
+    if (msgEl) msgEl.textContent = 'Logged in.';
+    currentUser = data?.user || null;
+    // clear fields
+    const pwdEl = document.getElementById('login-password');
+    if (pwdEl) pwdEl.value = '';
     updateAuthState();
   } catch (err) {
     console.error('Login error:', err);
-    errorEl.textContent = 'An error occurred.';
+    if (errorEl) errorEl.textContent = 'An error occurred.';
   }
 }
 
 async function logoutSeller() {
   try {
-    await supabase.auth.signOut();
+    await supabaseClient.auth.signOut();
     currentUser = null;
     updateAuthState();
-    document.getElementById('seller-message').textContent = '';
-    document.getElementById('login-message').textContent = '';
+    const sellerMsg = document.getElementById('seller-message');
+    const loginMsg = document.getElementById('login-message');
+    if (sellerMsg) sellerMsg.textContent = '';
+    if (loginMsg) loginMsg.textContent = '';
   } catch (err) {
     console.error('Logout error:', err);
   }
@@ -914,7 +934,7 @@ async function logoutSeller() {
 
 async function checkCurrentUser() {
   try {
-    const { data: { session } } = await supabase.auth.getSession();
+    const { data: { session } } = await supabaseClient.auth.getSession();
     if (session && session.user) {
       currentUser = session.user;
       updateAuthState();
@@ -928,13 +948,18 @@ async function checkCurrentUser() {
    PRODUCT ADD FLOW
    ===================================================== */
 function showAddProduct() {
-  document.getElementById('add-product-form').classList.remove('hidden');
-  document.getElementById('product-error').textContent = '';
-  document.getElementById('product-message').textContent = '';
+  const el = document.getElementById('add-product-form');
+
+  if (el) el.classList.remove('hidden');
+  const errEl = document.getElementById('product-error');
+  const msgEl = document.getElementById('product-message');
+  if (errEl) errEl.textContent = '';
+  if (msgEl) msgEl.textContent = '';
 }
 
 function hideAddProduct() {
-  document.getElementById('add-product-form').classList.add('hidden');
+  const form = document.getElementById('add-product-form');
+  if (form) form.classList.add('hidden');
   ['product-name','product-price','product-category','product-location','product-whatsapp','product-description'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
@@ -943,11 +968,17 @@ function hideAddProduct() {
   const video = document.getElementById('product-video');
   if (photo) photo.value = '';
   if (video) video.value = '';
-  document.getElementById('product-error').textContent = '';
-  document.getElementById('product-message').textContent = '';
+  const errEl = document.getElementById('product-error');
+  const msgEl = document.getElementById('product-message');
+  if (errEl) errEl.textContent = '';
+  if (msgEl) msgEl.textContent = '';
+  const submitBtn = document.getElementById('submit-product-btn');
+  if (submitBtn) submitBtn.disabled = false;
 }
 
 async function submitProduct() {
+  if (!currentUser) { alert('Please log in as a seller to add products.'); return; }
+
   const name = (document.getElementById('product-name').value || '').trim();
   const priceRaw = document.getElementById('product-price').value;
   const price = priceRaw === '' ? null : parseFloat(priceRaw);
@@ -955,26 +986,27 @@ async function submitProduct() {
   const location = (document.getElementById('product-location').value || '').trim();
   const whatsapp = (document.getElementById('product-whatsapp').value || '').trim();
   const description = (document.getElementById('product-description').value || '').trim();
-  const photoFile = document.getElementById('product-photo').files[0];
-  const videoFile = document.getElementById('product-video').files[0];
+  const photoFile = (document.getElementById('product-photo').files || [])[0];
+  const videoFile = (document.getElementById('product-video').files || [])[0];
 
   const errEl = document.getElementById('product-error');
   const msgEl = document.getElementById('product-message');
-  errEl.textContent = '';
-  msgEl.textContent = '';
+  if (errEl) errEl.textContent = '';
+  if (msgEl) msgEl.textContent = '';
 
-  if (!name) { errEl.textContent = 'Product name is required.'; return; }
-  if (price === null || Number.isNaN(price) || price < 0) { errEl.textContent = 'Enter a valid price.'; return; }
-  if (!category) { errEl.textContent = 'Select a category.'; return; }
-  if (!location) { errEl.textContent = 'Enter a location.'; return; }
+  if (!name) { if (errEl) errEl.textContent = 'Product name is required.'; return; }
+  if (price === null || Number.isNaN(price) || price < 0) { if (errEl) errEl.textContent = 'Enter a valid price.'; return; }
+  if (!category) { if (errEl) errEl.textContent = 'Select a category.'; return; }
+  if (!location) { if (errEl) errEl.textContent = 'Enter a location.'; return; }
 
   if (videoFile && videoFile.size > 25 * 1024 * 1024) {
-    errEl.textContent = 'Video file exceeds 25 MB limit.';
+    if (errEl) errEl.textContent = 'Video file exceeds 25 MB limit.';
     return;
   }
 
-  document.getElementById('submit-product-btn').disabled = true;
-  msgEl.textContent = 'Uploading...';
+  const submitBtn = document.getElementById('submit-product-btn');
+  if (submitBtn) submitBtn.disabled = true;
+  if (msgEl) msgEl.textContent = 'Uploading...';
 
   try {
     let imageUrl = null;
@@ -982,44 +1014,44 @@ async function submitProduct() {
 
     // Upload image
     if (photoFile) {
-      const imageFileName = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}_${photoFile.name}`;
-      const { data: imgData, error: imgError } = await supabase.storage
+      const imageFileName = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}_${photoFile.name.replace(/\s+/g,'_')}`;
+      const { data: imgData, error: imgError } = await supabaseClient.storage
         .from(PRODUCT_IMAGES_BUCKET)
         .upload(imageFileName, photoFile);
 
       if (imgError) {
-        errEl.textContent = 'Failed to upload image.';
-        document.getElementById('submit-product-btn').disabled = false;
+        if (errEl) errEl.textContent = 'Failed to upload image.';
+        if (submitBtn) submitBtn.disabled = false;
         return;
       }
 
-      const { data: urlData } = supabase.storage
+      const { data: urlData } = supabaseClient.storage
         .from(PRODUCT_IMAGES_BUCKET)
         .getPublicUrl(imageFileName);
       imageUrl = urlData.publicUrl;
     }
 
-    // Upload video
+    // Upload video (optional)
     if (videoFile) {
-      const videoFileName = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}_${videoFile.name}`;
-      const { data: vidData, error: vidError } = await supabase.storage
+      const videoFileName = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}_${videoFile.name.replace(/\s+/g,'_')}`;
+      const { data: vidData, error: vidError } = await supabaseClient.storage
         .from(PRODUCT_VIDEOS_BUCKET)
         .upload(videoFileName, videoFile);
 
       if (vidError) {
-        errEl.textContent = 'Failed to upload video.';
-        document.getElementById('submit-product-btn').disabled = false;
+        if (errEl) errEl.textContent = 'Failed to upload video.';
+        if (submitBtn) submitBtn.disabled = false;
         return;
       }
 
-      const { data: vidUrlData } = supabase.storage
+      const { data: vurlData } = supabaseClient.storage
         .from(PRODUCT_VIDEOS_BUCKET)
         .getPublicUrl(videoFileName);
-      videoUrl = vidUrlData.publicUrl;
+      videoUrl = vurlData.publicUrl;
     }
 
-    // Create product record
-    const { data, error } = await supabase.from('products').insert([{
+    // Insert product into DB (approval pending)
+    const productRow = {
       name,
       price,
       category,
@@ -1029,65 +1061,112 @@ async function submitProduct() {
       image_url: imageUrl,
       video_url: videoUrl,
       seller_id: currentUser.id,
-      approval_status: 'pending'
-    }]);
+      approval_status: 'pending',
+      created_at: new Date().toISOString()
+    };
 
-    if (error) {
-      errEl.textContent = 'Failed to submit product.';
-      document.getElementById('submit-product-btn').disabled = false;
-      console.error('Submit error:', error);
+    const { data: inserted, error: insertErr } = await supabaseClient
+      .from('products')
+      .insert([productRow]);
+
+    if (insertErr) {
+      console.error('Insert error:', insertErr);
+      if (errEl) errEl.textContent = 'Failed to submit product.';
+      if (submitBtn) submitBtn.disabled = false;
       return;
     }
 
-    msgEl.textContent = 'Product submitted for approval!';
+    if (msgEl) msgEl.textContent = 'Product submitted for approval.';
     hideAddProduct();
     await loadSellerProducts();
-    document.getElementById('submit-product-btn').disabled = false;
+    await loadProducts();
   } catch (err) {
-    console.error('Error submitting product:', err);
-    errEl.textContent = 'An error occurred.';
-    document.getElementById('submit-product-btn').disabled = false;
+    console.error('Submit product error:', err);
+    if (errEl) errEl.textContent = 'An error occurred.';
+    if (submitBtn) submitBtn.disabled = false;
   }
 }
 
 /* =====================================================
-   EVENT LISTENERS & INITIALIZATION
+   UI / EVENT BINDINGS
    ===================================================== */
-document.addEventListener('DOMContentLoaded', () => {
-  // Authentication buttons
-  document.getElementById('create-seller-btn').addEventListener('click', registerSeller);
-  document.getElementById('login-btn').addEventListener('click', loginSeller);
-  document.getElementById('logout-btn').addEventListener('click', logoutSeller);
-
-  // Seller dashboard buttons
-  document.getElementById('sell-cta').addEventListener('click', () => {
-    document.getElementById('seller').scrollIntoView({ behavior: 'smooth' });
-  });
-
-  document.getElementById('add-product-btn').addEventListener('click', showAddProduct);
-  document.getElementById('cancel-product-btn').addEventListener('click', hideAddProduct);
-  document.getElementById('submit-product-btn').addEventListener('click', submitProduct);
-
-  // Search
-  document.getElementById('search-btn').addEventListener('click', () => filterProducts());
-  document.getElementById('search').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') filterProducts();
-  });
-
-  // Categories
-  document.querySelectorAll('.cat').forEach(cat => {
-    cat.addEventListener('click', (e) => {
-      document.querySelectorAll('.cat').forEach(c => c.classList.remove('active'));
-      e.target.closest('.cat').classList.add('active');
-      selectedCategory = e.target.closest('.cat').getAttribute('data-cat');
+function setupEventHandlers() {
+  // Category clicks
+  const cats = Array.from(document.querySelectorAll('.cat'));
+  cats.forEach(el => {
+    el.addEventListener('click', () => {
+      const cat = el.getAttribute('data-cat');
+      if (selectedCategory === cat) {
+        selectedCategory = null;
+        el.classList.remove('active');
+      } else {
+        selectedCategory = cat;
+        cats.forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+      }
       filterProducts();
     });
   });
 
-  // Initialize
-  checkCurrentUser();
-  loadProducts();
-});
+  // Search
+  const searchBtn = document.getElementById('search-btn');
+  const searchInput = document.getElementById('search');
+  if (searchBtn) searchBtn.addEventListener('click', () => filterProducts());
+  if (searchInput) searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      filterProducts();
+  }
+  });
+
+  // Sell CTA scrolls to seller area
+  const sellCta = document.getElementById('sell-cta');
+  if (sellCta) sellCta.addEventListener('click', () => {
+    const sellerSection = document.getElementById('seller');
+    if (sellerSection) sellerSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  // Auth buttons
+  const createBtn = document.getElementById('create-seller-btn');
+  if (createBtn) createBtn.addEventListener('click', registerSeller);
+
+  const loginBtn = document.getElementById('login-btn');
+  if (loginBtn) loginBtn.addEventListener('click', loginSeller);
+
+  const logoutBtn = document.getElementById('logout-btn');
+  if (logoutBtn) logoutBtn.addEventListener('click', logoutSeller);
+
+  // Add product / cancel / submit
+  const addProductBtn = document.getElementById('add-product-btn');
+  if (addProductBtn) addProductBtn.addEventListener('click', () => {
+    if (!currentUser) {
+      alert('Please log in to add products.');
+      return;
+    }
+    showAddProduct();
+  });
+
+  const cancelProductBtn = document.getElementById('cancel-product-btn');
+  if (cancelProductBtn) cancelProductBtn.addEventListener('click', hideAddProduct);
+
+  const submitProductBtn = document.getElementById('submit-product-btn');
+  if (submitProductBtn) submitProductBtn.addEventListener('click', submitProduct);
+}
+
+/* =====================================================
+   BOOTSTRAP
+   ===================================================== */
+(async function init() {
+  setupEventHandlers();
+  await checkCurrentUser();
+  await loadProducts();
+
+  // Optional: subscribe to auth changes to keep UI in sync
+  supabaseClient.auth.onAuthStateChange((event, session) => {
+    currentUser = session?.user ?? null;
+    updateAuthState();
+  });
+})();
 </script>
 </body>
 </html>
