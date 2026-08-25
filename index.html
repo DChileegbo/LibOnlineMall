@@ -346,6 +346,10 @@ footer {
 
 <!-- ================= MAIN ================= -->
 <main>
+  <!-- ================= WEEKLY VISITS ================= -->
+<div class="site-stat" style="margin: 20px 0; padding: 14px; background: white; border: 1px solid #e4e7ec; border-radius: 10px; text-align: center; font-weight: 700;">
+  👥 <span id="weekly-visits-count">0</span> visits this week
+</div>
   <!-- CATEGORIES -->
   <div class="section-title">
     <h2>Categories</h2>
@@ -520,6 +524,73 @@ const PRODUCT_VIDEOS_BUCKET = 'product-videos';
 let currentUser = null;
 let products = [];
 let selectedCategory = null;
+  /* =====================================================
+   LIBONLINEMALL ANALYTICS
+   ===================================================== */
+
+// Record every page load / refresh
+async function recordSiteVisit() {
+  try {
+    const { error } = await supabaseClient
+      .from("site_visits")
+      .insert([{}]);
+
+    if (error) {
+      console.error("SITE VISIT ERROR:", error);
+    }
+  } catch (error) {
+    console.error("SITE VISIT ERROR:", error);
+  }
+}
+
+// Get visits from the last 7 days
+async function updateWeeklyVisits() {
+  try {
+    const { data, error } = await supabaseClient
+      .rpc("get_weekly_site_visits");
+
+    if (error) {
+      console.error("WEEKLY VISITS ERROR:", error);
+      return;
+    }
+
+    const countElement =
+      document.getElementById("weekly-visits-count");
+
+    if (countElement) {
+      countElement.textContent = Number(data) || 0;
+    }
+  } catch (error) {
+    console.error("WEEKLY VISITS ERROR:", error);
+  }
+}
+
+// Record a product video view
+async function recordVideoView(productId) {
+  if (!productId) return;
+
+  try {
+    const { error } = await supabaseClient
+      .from("product_video_views")
+      .insert([
+        {
+          product_id: productId
+        }
+      ]);
+
+    if (error) {
+      console.error("VIDEO VIEW ERROR:", error);
+    }
+  } catch (error) {
+    console.error("VIDEO VIEW ERROR:", error);
+  }
+}
+
+// Record this page load
+recordSiteVisit();
+
+// Update visible weekly visit number
+updateWeeklyVisits();
   // ================= PRODUCT SUBMISSION =================
 
 const submitProductBtn = document.getElementById("submit-product-btn");
@@ -724,7 +795,7 @@ function renderProductCard(product, includeDelete = false) {
   if (product.video_url) {
     // Use encodeURI to avoid breaking the onclick if the URL contains characters
     const safeUrl = encodeURI(product.video_url);
-    videoHtml = `<button class="video-btn" onclick="openVideoModal('${safeUrl}')">▶ Watch Video</button>`;
+    videoHtml = `<button class="video-btn" onclick="openVideoModal('${safeUrl}', '${escapeHtml(product.id)}')">▶ Watch Video</button>`;
   }
 
   let actionsHtml = '';
@@ -859,14 +930,22 @@ function filterProducts(query) {
 /* =====================================================
    VIDEO MODAL
    ===================================================== */
-function openVideoModal(videoUrl) {
+function openVideoModal(videoUrl, productId) {
   const modal = document.getElementById('video-modal');
   const video = document.getElementById('modal-video');
+
   if (!modal || !video) return;
+
   video.src = videoUrl;
+
+  // Count the video view when the video starts playing
+  video.onplay = function () {
+    recordVideoView(productId);
+  };
+
   modal.classList.add('active');
   modal.setAttribute('aria-hidden', 'false');
-}
+  }
 
 document.getElementById('modal-close-btn').addEventListener('click', () => {
   const modal = document.getElementById('video-modal');
