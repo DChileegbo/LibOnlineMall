@@ -476,7 +476,7 @@ footer {
       <input id="product-video" type="file" accept="video/mp4,video/quicktime" />
       <p class="small">Maximum: 1 video • 60 seconds • 25 MB</p>
 
-      <button class="primary-btn" id="submit-product-btn">Submit for Approval</button>
+      <button class="primary-btn" id="submit-product-btn">Post Product</button>
       <button class="secondary-btn" id="cancel-product-btn" type="button">Cancel</button>
 
       <p id="product-message" class="message" aria-live="polite"></p>
@@ -1206,7 +1206,7 @@ async function submitProduct() {
         description,
         image_url: imageUrl,
         video_url: videoUrl,
-        approval_status: 'pending'
+        approval_status: 'approved'
       }]);
 
     if (error) {
