@@ -666,7 +666,8 @@ submitProductBtn.addEventListener("click", async function () {
     console.error("PRODUCT SUBMISSION ERROR:", error);
 
     productMessage.textContent = "";
-    productError.textContent = error.message || "Failed to submit product.";
+    productError.textContent =
+  error.message || error.details || error.hint || String(error);
 
   } finally {
     submitProductBtn.disabled = false;
