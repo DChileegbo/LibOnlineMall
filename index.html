@@ -949,7 +949,6 @@ async function checkCurrentUser() {
    ===================================================== */
 function showAddProduct() {
   const el = document.getElementById('add-product-form');
-
   if (el) el.classList.remove('hidden');
   const errEl = document.getElementById('product-error');
   const msgEl = document.getElementById('product-message');
@@ -1116,7 +1115,7 @@ function setupEventHandlers() {
     if (e.key === 'Enter') {
       e.preventDefault();
       filterProducts();
-  }
+    }
   });
 
   // Sell CTA scrolls to seller area
