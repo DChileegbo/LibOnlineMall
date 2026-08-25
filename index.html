@@ -668,7 +668,7 @@ function updateAuthState() {
   if (currentUser) {
     if (accountForm) accountForm.classList.add('hidden');
     if (loginForm) loginForm.classList.add('hidden');
-    if (dashboard) dashboard.classList.remove('hidden';
+    if (dashboard) dashboard.classList.remove('hidden');
     if (welcome) {
       const userName = (currentUser.user_metadata && currentUser.user_metadata.full_name) || currentUser.email || 'Seller';
       welcome.textContent = `Welcome, ${escapeHtml(userName)}!`;
@@ -998,174 +998,120 @@ async function submitProduct() {
   if (!category) { if (errEl) errEl.textContent = 'Select a category.'; return; }
   if (!location) { if (errEl) errEl.textContent = 'Enter a location.'; return; }
 
-  if (videoFile && videoFile.size > 25 * 1024 * 1024) {
-    if (errEl) errEl.textContent = 'Video file exceeds 25 MB limit.';
-    return;
-  }
-
   const submitBtn = document.getElementById('submit-product-btn');
   if (submitBtn) submitBtn.disabled = true;
-  if (msgEl) msgEl.textContent = 'Uploading...';
+  if (msgEl) msgEl.textContent = 'Submitting...';
 
   try {
     let imageUrl = null;
     let videoUrl = null;
 
-    // Upload image
+    // Upload photo if provided
     if (photoFile) {
-      const imageFileName = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}_${photoFile.name.replace(/\s+/g,'_')}`;
-      const { data: imgData, error: imgError } = await supabaseClient.storage
+      const fileName = `${currentUser.id}/${Date.now()}_${photoFile.name}`;
+      const { error: uploadError } = await supabaseClient.storage
         .from(PRODUCT_IMAGES_BUCKET)
-        .upload(imageFileName, photoFile);
+        .upload(fileName, photoFile);
 
-      if (imgError) {
+      if (uploadError) {
         if (errEl) errEl.textContent = 'Failed to upload image.';
         if (submitBtn) submitBtn.disabled = false;
         return;
       }
 
-      const { data: urlData } = supabaseClient.storage
-        .from(PRODUCT_IMAGES_BUCKET)
-        .getPublicUrl(imageFileName);
-      imageUrl = urlData.publicUrl;
+      const { data } = supabaseClient.storage.from(PRODUCT_IMAGES_BUCKET).getPublicUrl(fileName);
+      imageUrl = data.publicUrl;
     }
 
-    // Upload video (optional)
+    // Upload video if provided
     if (videoFile) {
-      const videoFileName = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}_${videoFile.name.replace(/\s+/g,'_')}`;
-      const { data: vidData, error: vidError } = await supabaseClient.storage
+      const fileName = `${currentUser.id}/${Date.now()}_${videoFile.name}`;
+      const { error: uploadError } = await supabaseClient.storage
         .from(PRODUCT_VIDEOS_BUCKET)
-        .upload(videoFileName, videoFile);
+        .upload(fileName, videoFile);
 
-      if (vidError) {
+      if (uploadError) {
         if (errEl) errEl.textContent = 'Failed to upload video.';
         if (submitBtn) submitBtn.disabled = false;
         return;
       }
 
-      const { data: vurlData } = supabaseClient.storage
-        .from(PRODUCT_VIDEOS_BUCKET)
-        .getPublicUrl(videoFileName);
-      videoUrl = vurlData.publicUrl;
+      const { data } = supabaseClient.storage.from(PRODUCT_VIDEOS_BUCKET).getPublicUrl(fileName);
+      videoUrl = data.publicUrl;
     }
 
-    // Insert product into DB (approval pending)
-    const productRow = {
-      name,
-      price,
-      category,
-      location,
-      whatsapp,
-      description,
-      image_url: imageUrl,
-      video_url: videoUrl,
-      seller_id: currentUser.id,
-      approval_status: 'pending',
-      created_at: new Date().toISOString()
-    };
-
-    const { data: inserted, error: insertErr } = await supabaseClient
+    // Insert product into database
+    const { error } = await supabaseClient
       .from('products')
-      .insert([productRow]);
+      .insert([{
+        seller_id: currentUser.id,
+        name,
+        price,
+        category,
+        location,
+        whatsapp,
+        description,
+        image_url: imageUrl,
+        video_url: videoUrl,
+        approval_status: 'pending'
+      }]);
 
-    if (insertErr) {
-      console.error('Insert error:', insertErr);
+    if (error) {
       if (errEl) errEl.textContent = 'Failed to submit product.';
       if (submitBtn) submitBtn.disabled = false;
       return;
     }
 
-    if (msgEl) msgEl.textContent = 'Product submitted for approval.';
+    if (msgEl) msgEl.textContent = 'Product submitted for approval! 🎉';
     hideAddProduct();
     await loadSellerProducts();
-    await loadProducts();
   } catch (err) {
-    console.error('Submit product error:', err);
+    console.error('Submit error:', err);
     if (errEl) errEl.textContent = 'An error occurred.';
     if (submitBtn) submitBtn.disabled = false;
   }
 }
 
 /* =====================================================
-   UI / EVENT BINDINGS
+   EVENT LISTENERS - ATTACH ALL BUTTON HANDLERS
    ===================================================== */
-function setupEventHandlers() {
-  // Category clicks
-  const cats = Array.from(document.querySelectorAll('.cat'));
-  cats.forEach(el => {
-    el.addEventListener('click', () => {
-      const cat = el.getAttribute('data-cat');
-      if (selectedCategory === cat) {
-        selectedCategory = null;
-        el.classList.remove('active');
-      } else {
-        selectedCategory = cat;
-        cats.forEach(c => c.classList.remove('active'));
-        el.classList.add('active');
-      }
+document.addEventListener('DOMContentLoaded', () => {
+  // Authentication buttons
+  document.getElementById('create-seller-btn')?.addEventListener('click', registerSeller);
+  document.getElementById('login-btn')?.addEventListener('click', loginSeller);
+  document.getElementById('logout-btn')?.addEventListener('click', logoutSeller);
+
+  // Product management
+  document.getElementById('add-product-btn')?.addEventListener('click', showAddProduct);
+  document.getElementById('cancel-product-btn')?.addEventListener('click', hideAddProduct);
+  document.getElementById('submit-product-btn')?.addEventListener('click', submitProduct);
+
+  // Search
+  document.getElementById('search-btn')?.addEventListener('click', () => filterProducts());
+  document.getElementById('search')?.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') filterProducts();
+  });
+
+  // Sell CTA
+  document.getElementById('sell-cta')?.addEventListener('click', () => {
+    document.getElementById('seller')?.scrollIntoView({ behavior: 'smooth' });
+  });
+
+  // Category filters
+  document.querySelectorAll('.cat').forEach(cat => {
+    cat.addEventListener('click', () => {
+      document.querySelectorAll('.cat').forEach(c => c.classList.remove('active'));
+      cat.classList.add('active');
+      selectedCategory = cat.getAttribute('data-cat');
       filterProducts();
     });
   });
 
-  // Search
-  const searchBtn = document.getElementById('search-btn');
-  const searchInput = document.getElementById('search');
-  if (searchBtn) searchBtn.addEventListener('click', () => filterProducts());
-  if (searchInput) searchInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      filterProducts();
-    }
-  });
-
-  // Sell CTA scrolls to seller area
-  const sellCta = document.getElementById('sell-cta');
-  if (sellCta) sellCta.addEventListener('click', () => {
-    const sellerSection = document.getElementById('seller');
-    if (sellerSection) sellerSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
-
-  // Auth buttons
-  const createBtn = document.getElementById('create-seller-btn');
-  if (createBtn) createBtn.addEventListener('click', registerSeller);
-
-  const loginBtn = document.getElementById('login-btn');
-  if (loginBtn) loginBtn.addEventListener('click', loginSeller);
-
-  const logoutBtn = document.getElementById('logout-btn');
-  if (logoutBtn) logoutBtn.addEventListener('click', logoutSeller);
-
-  // Add product / cancel / submit
-  const addProductBtn = document.getElementById('add-product-btn');
-  if (addProductBtn) addProductBtn.addEventListener('click', () => {
-    if (!currentUser) {
-      alert('Please log in to add products.');
-      return;
-    }
-    showAddProduct();
-  });
-
-  const cancelProductBtn = document.getElementById('cancel-product-btn');
-  if (cancelProductBtn) cancelProductBtn.addEventListener('click', hideAddProduct);
-
-  const submitProductBtn = document.getElementById('submit-product-btn');
-  if (submitProductBtn) submitProductBtn.addEventListener('click', submitProduct);
-}
-
-/* =====================================================
-   BOOTSTRAP
-   ===================================================== */
-(async function init() {
-  setupEventHandlers();
-  await checkCurrentUser();
-  await loadProducts();
-
-  // Optional: subscribe to auth changes to keep UI in sync
-  supabaseClient.auth.onAuthStateChange((event, session) => {
-    currentUser = session?.user ?? null;
-    updateAuthState();
-  });
-})();
+  // Initialize
+  loadProducts();
+  checkCurrentUser();
+});
 </script>
+
 </body>
 </html>
