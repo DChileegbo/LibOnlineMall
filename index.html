@@ -606,6 +606,19 @@ async function getVideoViews(productId) {
     return 0;
   }
   }
+  // Display the video view count
+async function displayVideoViews(productId) {
+  if (!productId) return;
+
+  const countElement =
+    document.getElementById(`video-views-${productId}`);
+
+  if (!countElement) return;
+
+  const count = await getVideoViews(productId);
+
+  countElement.textContent = `👁 ${count} views`;
+}
 // Record this page load
 recordSiteVisit();
 
