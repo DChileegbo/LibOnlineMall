@@ -585,7 +585,27 @@ async function recordVideoView(productId) {
     console.error("VIDEO VIEW ERROR:", error);
   }
 }
+// Get total video views for a product
+async function getVideoViews(productId) {
+  if (!productId) return 0;
 
+  try {
+    const { data, error } = await supabaseClient
+      .rpc("get_product_video_views", {
+        product_uuid: productId
+      });
+
+    if (error) {
+      console.error("VIDEO VIEW COUNT ERROR:", error);
+      return 0;
+    }
+
+    return Number(data) || 0;
+  } catch (error) {
+    console.error("VIDEO VIEW COUNT ERROR:", error);
+    return 0;
+  }
+  }
 // Record this page load
 recordSiteVisit();
 
@@ -792,12 +812,24 @@ function renderProductCard(product, includeDelete = false) {
   const whatsappLink = whatsappUrlFromRaw(product.whatsapp);
 
   let videoHtml = '';
-  if (product.video_url) {
-    // Use encodeURI to avoid breaking the onclick if the URL contains characters
-    const safeUrl = encodeURI(product.video_url);
-    videoHtml = `<button class="video-btn" onclick="openVideoModal('${safeUrl}', '${escapeHtml(product.id)}')">▶ Watch Video</button>`;
-  }
 
+if (product.video_url) {
+  const safeUrl = encodeURI(product.video_url);
+
+  videoHtml = `
+    <div class="video-section">
+      <button class="video-btn"
+        onclick="openVideoModal('${safeUrl}', '${escapeHtml(product.id)}')">
+        ▶ Watch Video
+      </button>
+
+      <span class="video-view-count"
+        id="video-views-${escapeHtml(product.id)}">
+        👁 0 views
+      </span>
+    </div>
+  `;
+}
   let actionsHtml = '';
   if (includeDelete) {
     actionsHtml = `
