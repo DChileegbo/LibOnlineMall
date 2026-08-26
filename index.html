@@ -916,6 +916,61 @@ list.forEach(product => {
   }
 });
       }
+
+  async function updateSellerAnalytics() {
+  if (!currentUser) return;
+
+  try {
+    // Get this seller's products
+    const { data: sellerProducts, error } = await supabaseClient
+      .from("products")
+      .select("id")
+      .eq("seller_id", currentUser.id);
+
+    if (error) {
+      console.error("SELLER ANALYTICS ERROR:", error);
+      return;
+    }
+
+    // Total products
+    const productCount = sellerProducts?.length || 0;
+
+    const productCountElement =
+      document.getElementById("seller-product-count");
+
+    if (productCountElement) {
+      productCountElement.textContent = productCount;
+    }
+
+    // Total video views
+    let totalViews = 0;
+
+    if (sellerProducts && sellerProducts.length > 0) {
+      const productIds = sellerProducts.map(product => product.id);
+
+      const { data: views, error: viewsError } = await supabaseClient
+        .from("product_video_views")
+        .select("product_id")
+        .in("product_id", productIds);
+
+      if (viewsError) {
+        console.error("SELLER VIDEO VIEWS ERROR:", viewsError);
+      } else {
+        totalViews = views?.length || 0;
+      }
+    }
+
+    const viewsElement =
+      document.getElementById("seller-video-views");
+
+    if (viewsElement) {
+      viewsElement.textContent = totalViews;
+    }
+
+  } catch (error) {
+    console.error("SELLER ANALYTICS ERROR:", error);
+  }
+  }
   
 function renderSellerProducts(sellerProducts) {
   const container = document.getElementById('seller-products');
