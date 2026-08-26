@@ -861,9 +861,9 @@ if (product.video_url) {
     actionsHtml = `<div class="card-actions">${videoHtml}</div>`;
   }
 
-  const contactHtml = whatsappLink
-    ? `<a class="contact" href="${escapeHtml(whatsappLink)}" target="_blank" rel="noopener noreferrer">💬 Contact Seller</a>`
-    : `<div class="contact disabled">Contact Seller</div>`;
+  const contactHtml = whatsappLinkWithMessage
+  ? `<a class="contact" href="${escapeHtml(whatsappLinkWithMessage)}" target="_blank" rel="noopener noreferrer">💬 Contact Seller</a>`
+  : `<div class="contact disabled">Contact Seller</div>`;
 
   return `
     <div class="card" aria-label="${escapeHtml(product.name)}">
