@@ -824,6 +824,12 @@ function renderProductCard(product, includeDelete = false) {
 
   const whatsappLink = whatsappUrlFromRaw(product.whatsapp);
 
+const whatsappMessage =
+  `Hi, I'm interested in your ${product.name} on LibOnlineMall. Is it still available?`;
+
+const whatsappLinkWithMessage = whatsappLink
+  ? `${whatsappLink}${whatsappLink.includes('?') ? '&' : '?'}text=${encodeURIComponent(whatsappMessage)}`
+  : '';
   let videoHtml = '';
 
 if (product.video_url) {
