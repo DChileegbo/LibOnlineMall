@@ -887,8 +887,14 @@ function render(list = products) {
   }
 
   container.innerHTML = list.map(p => renderProductCard(p, false)).join('');
-}
 
+list.forEach(product => {
+  if (product.video_url) {
+    displayVideoViews(product.id);
+  }
+});
+      }
+  
 function renderSellerProducts(sellerProducts) {
   const container = document.getElementById('seller-products');
   const section = document.getElementById('my-listings-section');
